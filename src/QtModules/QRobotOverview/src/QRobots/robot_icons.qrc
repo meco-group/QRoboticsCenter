@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+ <qresource>
+     <file>../../robot_icons/car.png</file>
+     <file>../../robot_icons/ballbot.png</file>
+     <file>../../robot_icons/tiltingtable.png</file>
+     <file>../../robot_icons/unknown.png</file>
+ </qresource>
+ </RCC>
