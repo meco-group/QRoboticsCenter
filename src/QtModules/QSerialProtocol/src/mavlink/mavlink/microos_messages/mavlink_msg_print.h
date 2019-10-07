@@ -1,27 +1,39 @@
+#pragma once
 // MESSAGE PRINT PACKING
 
 #define MAVLINK_MSG_ID_PRINT 5
 
-typedef struct __mavlink_print_t
-{
- char text[32]; ///< Text to be sent. We suggest termination with '\0'.
-} mavlink_print_t;
+MAVPACKED(
+typedef struct __mavlink_print_t {
+ char text[32]; /*<  Text to be sent. We suggest termination with '\0'.*/
+}) mavlink_print_t;
 
 #define MAVLINK_MSG_ID_PRINT_LEN 32
+#define MAVLINK_MSG_ID_PRINT_MIN_LEN 32
 #define MAVLINK_MSG_ID_5_LEN 32
+#define MAVLINK_MSG_ID_5_MIN_LEN 32
 
 #define MAVLINK_MSG_ID_PRINT_CRC 107
 #define MAVLINK_MSG_ID_5_CRC 107
 
 #define MAVLINK_MSG_PRINT_FIELD_TEXT_LEN 32
 
+#if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_PRINT { \
-	"PRINT", \
-	1, \
-	{  { "text", NULL, MAVLINK_TYPE_CHAR, 32, 0, offsetof(mavlink_print_t, text) }, \
+    5, \
+    "PRINT", \
+    1, \
+    {  { "text", NULL, MAVLINK_TYPE_CHAR, 32, 0, offsetof(mavlink_print_t, text) }, \
          } \
 }
-
+#else
+#define MAVLINK_MESSAGE_INFO_PRINT { \
+    "PRINT", \
+    1, \
+    {  { "text", NULL, MAVLINK_TYPE_CHAR, 32, 0, offsetof(mavlink_print_t, text) }, \
+         } \
+}
+#endif
 
 /**
  * @brief Pack a print message
@@ -29,30 +41,26 @@ typedef struct __mavlink_print_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param text Text to be sent. We suggest termination with '\0'.
+ * @param text  Text to be sent. We suggest termination with '\0'.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_print_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       const char *text)
+                               const char *text)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_PRINT_LEN];
+    char buf[MAVLINK_MSG_ID_PRINT_LEN];
 
-	_mav_put_char_array(buf, 0, text, 32);
+    _mav_put_char_array(buf, 0, text, 32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_PRINT_LEN);
 #else
-	mavlink_print_t packet;
+    mavlink_print_t packet;
 
-	mav_array_memcpy(packet.text, text, sizeof(char)*32);
+    mav_array_memcpy(packet.text, text, sizeof(char)*32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_PRINT_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_PRINT;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
-#else
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_PRINT_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_PRINT;
+    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_PRINT_MIN_LEN, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
 }
 
 /**
@@ -61,31 +69,27 @@ static inline uint16_t mavlink_msg_print_pack(uint8_t system_id, uint8_t compone
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param text Text to be sent. We suggest termination with '\0'.
+ * @param text  Text to be sent. We suggest termination with '\0'.
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_print_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           const char *text)
+                               mavlink_message_t* msg,
+                                   const char *text)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_PRINT_LEN];
+    char buf[MAVLINK_MSG_ID_PRINT_LEN];
 
-	_mav_put_char_array(buf, 0, text, 32);
+    _mav_put_char_array(buf, 0, text, 32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_PRINT_LEN);
 #else
-	mavlink_print_t packet;
+    mavlink_print_t packet;
 
-	mav_array_memcpy(packet.text, text, sizeof(char)*32);
+    mav_array_memcpy(packet.text, text, sizeof(char)*32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_PRINT_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_PRINT;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
-#else
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_PRINT_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_PRINT;
+    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_PRINT_MIN_LEN, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
 }
 
 /**
@@ -98,7 +102,7 @@ static inline uint16_t mavlink_msg_print_pack_chan(uint8_t system_id, uint8_t co
  */
 static inline uint16_t mavlink_msg_print_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_print_t* print)
 {
-	return mavlink_msg_print_pack(system_id, component_id, msg, print->text);
+    return mavlink_msg_print_pack(system_id, component_id, msg, print->text);
 }
 
 /**
@@ -112,37 +116,43 @@ static inline uint16_t mavlink_msg_print_encode(uint8_t system_id, uint8_t compo
  */
 static inline uint16_t mavlink_msg_print_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_print_t* print)
 {
-	return mavlink_msg_print_pack_chan(system_id, component_id, chan, msg, print->text);
+    return mavlink_msg_print_pack_chan(system_id, component_id, chan, msg, print->text);
 }
 
 /**
  * @brief Send a print message
  * @param chan MAVLink channel to send the message
  *
- * @param text Text to be sent. We suggest termination with '\0'.
+ * @param text  Text to be sent. We suggest termination with '\0'.
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
 static inline void mavlink_msg_print_send(mavlink_channel_t chan, const char *text)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_PRINT_LEN];
+    char buf[MAVLINK_MSG_ID_PRINT_LEN];
 
-	_mav_put_char_array(buf, 0, text, 32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, buf, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
+    _mav_put_char_array(buf, 0, text, 32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, buf, MAVLINK_MSG_ID_PRINT_MIN_LEN, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, buf, MAVLINK_MSG_ID_PRINT_LEN);
-#endif
-#else
-	mavlink_print_t packet;
+    mavlink_print_t packet;
 
-	mav_array_memcpy(packet.text, text, sizeof(char)*32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, (const char *)&packet, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, (const char *)&packet, MAVLINK_MSG_ID_PRINT_LEN);
+    mav_array_memcpy(packet.text, text, sizeof(char)*32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, (const char *)&packet, MAVLINK_MSG_ID_PRINT_MIN_LEN, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
 #endif
+}
+
+/**
+ * @brief Send a print message
+ * @param chan MAVLink channel to send the message
+ * @param struct The MAVLink struct to serialize
+ */
+static inline void mavlink_msg_print_send_struct(mavlink_channel_t chan, const mavlink_print_t* print)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    mavlink_msg_print_send(chan, print->text);
+#else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, (const char *)print, MAVLINK_MSG_ID_PRINT_MIN_LEN, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
 #endif
 }
 
@@ -157,23 +167,15 @@ static inline void mavlink_msg_print_send(mavlink_channel_t chan, const char *te
 static inline void mavlink_msg_print_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  const char *text)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
+    char *buf = (char *)msgbuf;
 
-	_mav_put_char_array(buf, 0, text, 32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, buf, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
+    _mav_put_char_array(buf, 0, text, 32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, buf, MAVLINK_MSG_ID_PRINT_MIN_LEN, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, buf, MAVLINK_MSG_ID_PRINT_LEN);
-#endif
-#else
-	mavlink_print_t *packet = (mavlink_print_t *)msgbuf;
+    mavlink_print_t *packet = (mavlink_print_t *)msgbuf;
 
-	mav_array_memcpy(packet->text, text, sizeof(char)*32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, (const char *)packet, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, (const char *)packet, MAVLINK_MSG_ID_PRINT_LEN);
-#endif
+    mav_array_memcpy(packet->text, text, sizeof(char)*32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PRINT, (const char *)packet, MAVLINK_MSG_ID_PRINT_MIN_LEN, MAVLINK_MSG_ID_PRINT_LEN, MAVLINK_MSG_ID_PRINT_CRC);
 #endif
 }
 #endif
@@ -186,11 +188,11 @@ static inline void mavlink_msg_print_send_buf(mavlink_message_t *msgbuf, mavlink
 /**
  * @brief Get field text from print message
  *
- * @return Text to be sent. We suggest termination with '\0'.
+ * @return  Text to be sent. We suggest termination with '\0'.
  */
 static inline uint16_t mavlink_msg_print_get_text(const mavlink_message_t* msg, char *text)
 {
-	return _MAV_RETURN_char_array(msg, text, 32,  0);
+    return _MAV_RETURN_char_array(msg, text, 32,  0);
 }
 
 /**
@@ -201,9 +203,11 @@ static inline uint16_t mavlink_msg_print_get_text(const mavlink_message_t* msg, 
  */
 static inline void mavlink_msg_print_decode(const mavlink_message_t* msg, mavlink_print_t* print)
 {
-#if MAVLINK_NEED_BYTE_SWAP
-	mavlink_msg_print_get_text(msg, print->text);
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    mavlink_msg_print_get_text(msg, print->text);
 #else
-	memcpy(print, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_PRINT_LEN);
+        uint8_t len = msg->len < MAVLINK_MSG_ID_PRINT_LEN? msg->len : MAVLINK_MSG_ID_PRINT_LEN;
+        memset(print, 0, MAVLINK_MSG_ID_PRINT_LEN);
+    memcpy(print, _MAV_PAYLOAD(msg), len);
 #endif
 }

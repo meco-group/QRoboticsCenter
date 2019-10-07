@@ -1,15 +1,18 @@
+#pragma once
 // MESSAGE RADAR_LINE PACKING
 
 #define MAVLINK_MSG_ID_RADAR_LINE 71
 
-typedef struct __mavlink_radar_line_t
-{
- int32_t x[2]; ///< x [mm-sugg.].
- int32_t y[2]; ///< y [mm-sugg.].
-} mavlink_radar_line_t;
+MAVPACKED(
+typedef struct __mavlink_radar_line_t {
+ int32_t x[2]; /*<  x [mm-sugg.].*/
+ int32_t y[2]; /*<  y [mm-sugg.].*/
+}) mavlink_radar_line_t;
 
 #define MAVLINK_MSG_ID_RADAR_LINE_LEN 16
+#define MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN 16
 #define MAVLINK_MSG_ID_71_LEN 16
+#define MAVLINK_MSG_ID_71_MIN_LEN 16
 
 #define MAVLINK_MSG_ID_RADAR_LINE_CRC 230
 #define MAVLINK_MSG_ID_71_CRC 230
@@ -17,14 +20,24 @@ typedef struct __mavlink_radar_line_t
 #define MAVLINK_MSG_RADAR_LINE_FIELD_X_LEN 2
 #define MAVLINK_MSG_RADAR_LINE_FIELD_Y_LEN 2
 
+#if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_RADAR_LINE { \
-	"RADAR_LINE", \
-	2, \
-	{  { "x", NULL, MAVLINK_TYPE_INT32_T, 2, 0, offsetof(mavlink_radar_line_t, x) }, \
+    71, \
+    "RADAR_LINE", \
+    2, \
+    {  { "x", NULL, MAVLINK_TYPE_INT32_T, 2, 0, offsetof(mavlink_radar_line_t, x) }, \
          { "y", NULL, MAVLINK_TYPE_INT32_T, 2, 8, offsetof(mavlink_radar_line_t, y) }, \
          } \
 }
-
+#else
+#define MAVLINK_MESSAGE_INFO_RADAR_LINE { \
+    "RADAR_LINE", \
+    2, \
+    {  { "x", NULL, MAVLINK_TYPE_INT32_T, 2, 0, offsetof(mavlink_radar_line_t, x) }, \
+         { "y", NULL, MAVLINK_TYPE_INT32_T, 2, 8, offsetof(mavlink_radar_line_t, y) }, \
+         } \
+}
+#endif
 
 /**
  * @brief Pack a radar_line message
@@ -32,33 +45,29 @@ typedef struct __mavlink_radar_line_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param x x [mm-sugg.].
- * @param y y [mm-sugg.].
+ * @param x  x [mm-sugg.].
+ * @param y  y [mm-sugg.].
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_radar_line_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       const int32_t *x, const int32_t *y)
+                               const int32_t *x, const int32_t *y)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_RADAR_LINE_LEN];
+    char buf[MAVLINK_MSG_ID_RADAR_LINE_LEN];
 
-	_mav_put_int32_t_array(buf, 0, x, 2);
-	_mav_put_int32_t_array(buf, 8, y, 2);
+    _mav_put_int32_t_array(buf, 0, x, 2);
+    _mav_put_int32_t_array(buf, 8, y, 2);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_RADAR_LINE_LEN);
 #else
-	mavlink_radar_line_t packet;
+    mavlink_radar_line_t packet;
 
-	mav_array_memcpy(packet.x, x, sizeof(int32_t)*2);
-	mav_array_memcpy(packet.y, y, sizeof(int32_t)*2);
+    mav_array_memcpy(packet.x, x, sizeof(int32_t)*2);
+    mav_array_memcpy(packet.y, y, sizeof(int32_t)*2);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_RADAR_LINE_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_RADAR_LINE;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
-#else
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_RADAR_LINE_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_RADAR_LINE;
+    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
 }
 
 /**
@@ -67,34 +76,30 @@ static inline uint16_t mavlink_msg_radar_line_pack(uint8_t system_id, uint8_t co
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param x x [mm-sugg.].
- * @param y y [mm-sugg.].
+ * @param x  x [mm-sugg.].
+ * @param y  y [mm-sugg.].
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_radar_line_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           const int32_t *x,const int32_t *y)
+                               mavlink_message_t* msg,
+                                   const int32_t *x,const int32_t *y)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_RADAR_LINE_LEN];
+    char buf[MAVLINK_MSG_ID_RADAR_LINE_LEN];
 
-	_mav_put_int32_t_array(buf, 0, x, 2);
-	_mav_put_int32_t_array(buf, 8, y, 2);
+    _mav_put_int32_t_array(buf, 0, x, 2);
+    _mav_put_int32_t_array(buf, 8, y, 2);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_RADAR_LINE_LEN);
 #else
-	mavlink_radar_line_t packet;
+    mavlink_radar_line_t packet;
 
-	mav_array_memcpy(packet.x, x, sizeof(int32_t)*2);
-	mav_array_memcpy(packet.y, y, sizeof(int32_t)*2);
+    mav_array_memcpy(packet.x, x, sizeof(int32_t)*2);
+    mav_array_memcpy(packet.y, y, sizeof(int32_t)*2);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_RADAR_LINE_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_RADAR_LINE;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
-#else
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_RADAR_LINE_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_RADAR_LINE;
+    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
 }
 
 /**
@@ -107,7 +112,7 @@ static inline uint16_t mavlink_msg_radar_line_pack_chan(uint8_t system_id, uint8
  */
 static inline uint16_t mavlink_msg_radar_line_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_radar_line_t* radar_line)
 {
-	return mavlink_msg_radar_line_pack(system_id, component_id, msg, radar_line->x, radar_line->y);
+    return mavlink_msg_radar_line_pack(system_id, component_id, msg, radar_line->x, radar_line->y);
 }
 
 /**
@@ -121,40 +126,46 @@ static inline uint16_t mavlink_msg_radar_line_encode(uint8_t system_id, uint8_t 
  */
 static inline uint16_t mavlink_msg_radar_line_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_radar_line_t* radar_line)
 {
-	return mavlink_msg_radar_line_pack_chan(system_id, component_id, chan, msg, radar_line->x, radar_line->y);
+    return mavlink_msg_radar_line_pack_chan(system_id, component_id, chan, msg, radar_line->x, radar_line->y);
 }
 
 /**
  * @brief Send a radar_line message
  * @param chan MAVLink channel to send the message
  *
- * @param x x [mm-sugg.].
- * @param y y [mm-sugg.].
+ * @param x  x [mm-sugg.].
+ * @param y  y [mm-sugg.].
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
 static inline void mavlink_msg_radar_line_send(mavlink_channel_t chan, const int32_t *x, const int32_t *y)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_RADAR_LINE_LEN];
+    char buf[MAVLINK_MSG_ID_RADAR_LINE_LEN];
 
-	_mav_put_int32_t_array(buf, 0, x, 2);
-	_mav_put_int32_t_array(buf, 8, y, 2);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, buf, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
+    _mav_put_int32_t_array(buf, 0, x, 2);
+    _mav_put_int32_t_array(buf, 8, y, 2);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, buf, MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, buf, MAVLINK_MSG_ID_RADAR_LINE_LEN);
-#endif
-#else
-	mavlink_radar_line_t packet;
+    mavlink_radar_line_t packet;
 
-	mav_array_memcpy(packet.x, x, sizeof(int32_t)*2);
-	mav_array_memcpy(packet.y, y, sizeof(int32_t)*2);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, (const char *)&packet, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, (const char *)&packet, MAVLINK_MSG_ID_RADAR_LINE_LEN);
+    mav_array_memcpy(packet.x, x, sizeof(int32_t)*2);
+    mav_array_memcpy(packet.y, y, sizeof(int32_t)*2);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, (const char *)&packet, MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
 #endif
+}
+
+/**
+ * @brief Send a radar_line message
+ * @param chan MAVLink channel to send the message
+ * @param struct The MAVLink struct to serialize
+ */
+static inline void mavlink_msg_radar_line_send_struct(mavlink_channel_t chan, const mavlink_radar_line_t* radar_line)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    mavlink_msg_radar_line_send(chan, radar_line->x, radar_line->y);
+#else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, (const char *)radar_line, MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
 #endif
 }
 
@@ -169,25 +180,17 @@ static inline void mavlink_msg_radar_line_send(mavlink_channel_t chan, const int
 static inline void mavlink_msg_radar_line_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  const int32_t *x, const int32_t *y)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
+    char *buf = (char *)msgbuf;
 
-	_mav_put_int32_t_array(buf, 0, x, 2);
-	_mav_put_int32_t_array(buf, 8, y, 2);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, buf, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
+    _mav_put_int32_t_array(buf, 0, x, 2);
+    _mav_put_int32_t_array(buf, 8, y, 2);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, buf, MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, buf, MAVLINK_MSG_ID_RADAR_LINE_LEN);
-#endif
-#else
-	mavlink_radar_line_t *packet = (mavlink_radar_line_t *)msgbuf;
+    mavlink_radar_line_t *packet = (mavlink_radar_line_t *)msgbuf;
 
-	mav_array_memcpy(packet->x, x, sizeof(int32_t)*2);
-	mav_array_memcpy(packet->y, y, sizeof(int32_t)*2);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, (const char *)packet, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, (const char *)packet, MAVLINK_MSG_ID_RADAR_LINE_LEN);
-#endif
+    mav_array_memcpy(packet->x, x, sizeof(int32_t)*2);
+    mav_array_memcpy(packet->y, y, sizeof(int32_t)*2);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_RADAR_LINE, (const char *)packet, MAVLINK_MSG_ID_RADAR_LINE_MIN_LEN, MAVLINK_MSG_ID_RADAR_LINE_LEN, MAVLINK_MSG_ID_RADAR_LINE_CRC);
 #endif
 }
 #endif
@@ -200,21 +203,21 @@ static inline void mavlink_msg_radar_line_send_buf(mavlink_message_t *msgbuf, ma
 /**
  * @brief Get field x from radar_line message
  *
- * @return x [mm-sugg.].
+ * @return  x [mm-sugg.].
  */
 static inline uint16_t mavlink_msg_radar_line_get_x(const mavlink_message_t* msg, int32_t *x)
 {
-	return _MAV_RETURN_int32_t_array(msg, x, 2,  0);
+    return _MAV_RETURN_int32_t_array(msg, x, 2,  0);
 }
 
 /**
  * @brief Get field y from radar_line message
  *
- * @return y [mm-sugg.].
+ * @return  y [mm-sugg.].
  */
 static inline uint16_t mavlink_msg_radar_line_get_y(const mavlink_message_t* msg, int32_t *y)
 {
-	return _MAV_RETURN_int32_t_array(msg, y, 2,  8);
+    return _MAV_RETURN_int32_t_array(msg, y, 2,  8);
 }
 
 /**
@@ -225,10 +228,12 @@ static inline uint16_t mavlink_msg_radar_line_get_y(const mavlink_message_t* msg
  */
 static inline void mavlink_msg_radar_line_decode(const mavlink_message_t* msg, mavlink_radar_line_t* radar_line)
 {
-#if MAVLINK_NEED_BYTE_SWAP
-	mavlink_msg_radar_line_get_x(msg, radar_line->x);
-	mavlink_msg_radar_line_get_y(msg, radar_line->y);
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    mavlink_msg_radar_line_get_x(msg, radar_line->x);
+    mavlink_msg_radar_line_get_y(msg, radar_line->y);
 #else
-	memcpy(radar_line, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_RADAR_LINE_LEN);
+        uint8_t len = msg->len < MAVLINK_MSG_ID_RADAR_LINE_LEN? msg->len : MAVLINK_MSG_ID_RADAR_LINE_LEN;
+        memset(radar_line, 0, MAVLINK_MSG_ID_RADAR_LINE_LEN);
+    memcpy(radar_line, _MAV_PAYLOAD(msg), len);
 #endif
 }

@@ -1,10 +1,17 @@
-#ifdef __cplusplus
+#pragma once
+
+#if defined(MAVLINK_USE_CXX_NAMESPACE)
+namespace mavlink {
+#elif defined(__cplusplus)
 extern "C" {
 #endif
 
-#ifndef _CHECKSUM_H_
-#define _CHECKSUM_H_
+// Visual Studio versions before 2010 don't have stdint.h, so we just error out.
+#if (defined _MSC_VER) && (_MSC_VER < 1600)
+#error "The C-MAVLink implementation requires Visual Studio 2010 or greater"
+#endif
 
+#include <stdint.h>
 
 /**
  *
@@ -83,8 +90,6 @@ static inline void crc_accumulate_buffer(uint16_t *crcAccum, const char *pBuffer
         }
 }
 
-#endif /* _CHECKSUM_H_ */
-
-#ifdef __cplusplus
+#if defined(MAVLINK_USE_CXX_NAMESPACE) || defined(__cplusplus)
 }
 #endif

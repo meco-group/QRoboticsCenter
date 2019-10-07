@@ -1,29 +1,34 @@
+#pragma once
 // MESSAGE POSE PACKING
 
 #define MAVLINK_MSG_ID_POSE 50
 
-typedef struct __mavlink_pose_t
-{
- int32_t x; ///< x [mm-sugg.].
- int32_t y; ///< y [mm-sugg.].
- int32_t z; ///< z [mm-sugg.].
- int16_t roll; ///< roll [mrad-sugg.].
- int16_t pitch; ///< pitch [mrad-sugg.]
- int16_t yaw; ///< yaw [mrad-sugg.]
-} mavlink_pose_t;
+MAVPACKED(
+typedef struct __mavlink_pose_t {
+ int32_t x; /*<  x [mm-sugg.].*/
+ int32_t y; /*<  y [mm-sugg.].*/
+ int32_t z; /*<  z [mm-sugg.].*/
+ int16_t roll; /*<  roll [mrad-sugg.].*/
+ int16_t pitch; /*<  pitch [mrad-sugg.]*/
+ int16_t yaw; /*<  yaw [mrad-sugg.]*/
+}) mavlink_pose_t;
 
 #define MAVLINK_MSG_ID_POSE_LEN 18
+#define MAVLINK_MSG_ID_POSE_MIN_LEN 18
 #define MAVLINK_MSG_ID_50_LEN 18
+#define MAVLINK_MSG_ID_50_MIN_LEN 18
 
 #define MAVLINK_MSG_ID_POSE_CRC 97
 #define MAVLINK_MSG_ID_50_CRC 97
 
 
 
+#if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_POSE { \
-	"POSE", \
-	6, \
-	{  { "x", NULL, MAVLINK_TYPE_INT32_T, 0, 0, offsetof(mavlink_pose_t, x) }, \
+    50, \
+    "POSE", \
+    6, \
+    {  { "x", NULL, MAVLINK_TYPE_INT32_T, 0, 0, offsetof(mavlink_pose_t, x) }, \
          { "y", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_pose_t, y) }, \
          { "z", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_pose_t, z) }, \
          { "roll", NULL, MAVLINK_TYPE_INT16_T, 0, 12, offsetof(mavlink_pose_t, roll) }, \
@@ -31,7 +36,19 @@ typedef struct __mavlink_pose_t
          { "yaw", NULL, MAVLINK_TYPE_INT16_T, 0, 16, offsetof(mavlink_pose_t, yaw) }, \
          } \
 }
-
+#else
+#define MAVLINK_MESSAGE_INFO_POSE { \
+    "POSE", \
+    6, \
+    {  { "x", NULL, MAVLINK_TYPE_INT32_T, 0, 0, offsetof(mavlink_pose_t, x) }, \
+         { "y", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_pose_t, y) }, \
+         { "z", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_pose_t, z) }, \
+         { "roll", NULL, MAVLINK_TYPE_INT16_T, 0, 12, offsetof(mavlink_pose_t, roll) }, \
+         { "pitch", NULL, MAVLINK_TYPE_INT16_T, 0, 14, offsetof(mavlink_pose_t, pitch) }, \
+         { "yaw", NULL, MAVLINK_TYPE_INT16_T, 0, 16, offsetof(mavlink_pose_t, yaw) }, \
+         } \
+}
+#endif
 
 /**
  * @brief Pack a pose message
@@ -39,45 +56,41 @@ typedef struct __mavlink_pose_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param x x [mm-sugg.].
- * @param y y [mm-sugg.].
- * @param z z [mm-sugg.].
- * @param roll roll [mrad-sugg.].
- * @param pitch pitch [mrad-sugg.]
- * @param yaw yaw [mrad-sugg.]
+ * @param x  x [mm-sugg.].
+ * @param y  y [mm-sugg.].
+ * @param z  z [mm-sugg.].
+ * @param roll  roll [mrad-sugg.].
+ * @param pitch  pitch [mrad-sugg.]
+ * @param yaw  yaw [mrad-sugg.]
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_pose_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       int32_t x, int32_t y, int32_t z, int16_t roll, int16_t pitch, int16_t yaw)
+                               int32_t x, int32_t y, int32_t z, int16_t roll, int16_t pitch, int16_t yaw)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_POSE_LEN];
-	_mav_put_int32_t(buf, 0, x);
-	_mav_put_int32_t(buf, 4, y);
-	_mav_put_int32_t(buf, 8, z);
-	_mav_put_int16_t(buf, 12, roll);
-	_mav_put_int16_t(buf, 14, pitch);
-	_mav_put_int16_t(buf, 16, yaw);
+    char buf[MAVLINK_MSG_ID_POSE_LEN];
+    _mav_put_int32_t(buf, 0, x);
+    _mav_put_int32_t(buf, 4, y);
+    _mav_put_int32_t(buf, 8, z);
+    _mav_put_int16_t(buf, 12, roll);
+    _mav_put_int16_t(buf, 14, pitch);
+    _mav_put_int16_t(buf, 16, yaw);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_POSE_LEN);
 #else
-	mavlink_pose_t packet;
-	packet.x = x;
-	packet.y = y;
-	packet.z = z;
-	packet.roll = roll;
-	packet.pitch = pitch;
-	packet.yaw = yaw;
+    mavlink_pose_t packet;
+    packet.x = x;
+    packet.y = y;
+    packet.z = z;
+    packet.roll = roll;
+    packet.pitch = pitch;
+    packet.yaw = yaw;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_POSE_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_POSE;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
-#else
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_POSE_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_POSE;
+    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_POSE_MIN_LEN, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
 }
 
 /**
@@ -86,46 +99,42 @@ static inline uint16_t mavlink_msg_pose_pack(uint8_t system_id, uint8_t componen
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param x x [mm-sugg.].
- * @param y y [mm-sugg.].
- * @param z z [mm-sugg.].
- * @param roll roll [mrad-sugg.].
- * @param pitch pitch [mrad-sugg.]
- * @param yaw yaw [mrad-sugg.]
+ * @param x  x [mm-sugg.].
+ * @param y  y [mm-sugg.].
+ * @param z  z [mm-sugg.].
+ * @param roll  roll [mrad-sugg.].
+ * @param pitch  pitch [mrad-sugg.]
+ * @param yaw  yaw [mrad-sugg.]
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_pose_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           int32_t x,int32_t y,int32_t z,int16_t roll,int16_t pitch,int16_t yaw)
+                               mavlink_message_t* msg,
+                                   int32_t x,int32_t y,int32_t z,int16_t roll,int16_t pitch,int16_t yaw)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_POSE_LEN];
-	_mav_put_int32_t(buf, 0, x);
-	_mav_put_int32_t(buf, 4, y);
-	_mav_put_int32_t(buf, 8, z);
-	_mav_put_int16_t(buf, 12, roll);
-	_mav_put_int16_t(buf, 14, pitch);
-	_mav_put_int16_t(buf, 16, yaw);
+    char buf[MAVLINK_MSG_ID_POSE_LEN];
+    _mav_put_int32_t(buf, 0, x);
+    _mav_put_int32_t(buf, 4, y);
+    _mav_put_int32_t(buf, 8, z);
+    _mav_put_int16_t(buf, 12, roll);
+    _mav_put_int16_t(buf, 14, pitch);
+    _mav_put_int16_t(buf, 16, yaw);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_POSE_LEN);
 #else
-	mavlink_pose_t packet;
-	packet.x = x;
-	packet.y = y;
-	packet.z = z;
-	packet.roll = roll;
-	packet.pitch = pitch;
-	packet.yaw = yaw;
+    mavlink_pose_t packet;
+    packet.x = x;
+    packet.y = y;
+    packet.z = z;
+    packet.roll = roll;
+    packet.pitch = pitch;
+    packet.yaw = yaw;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_POSE_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_POSE;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
-#else
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_POSE_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_POSE;
+    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_POSE_MIN_LEN, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
 }
 
 /**
@@ -138,7 +147,7 @@ static inline uint16_t mavlink_msg_pose_pack_chan(uint8_t system_id, uint8_t com
  */
 static inline uint16_t mavlink_msg_pose_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_pose_t* pose)
 {
-	return mavlink_msg_pose_pack(system_id, component_id, msg, pose->x, pose->y, pose->z, pose->roll, pose->pitch, pose->yaw);
+    return mavlink_msg_pose_pack(system_id, component_id, msg, pose->x, pose->y, pose->z, pose->roll, pose->pitch, pose->yaw);
 }
 
 /**
@@ -152,52 +161,58 @@ static inline uint16_t mavlink_msg_pose_encode(uint8_t system_id, uint8_t compon
  */
 static inline uint16_t mavlink_msg_pose_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_pose_t* pose)
 {
-	return mavlink_msg_pose_pack_chan(system_id, component_id, chan, msg, pose->x, pose->y, pose->z, pose->roll, pose->pitch, pose->yaw);
+    return mavlink_msg_pose_pack_chan(system_id, component_id, chan, msg, pose->x, pose->y, pose->z, pose->roll, pose->pitch, pose->yaw);
 }
 
 /**
  * @brief Send a pose message
  * @param chan MAVLink channel to send the message
  *
- * @param x x [mm-sugg.].
- * @param y y [mm-sugg.].
- * @param z z [mm-sugg.].
- * @param roll roll [mrad-sugg.].
- * @param pitch pitch [mrad-sugg.]
- * @param yaw yaw [mrad-sugg.]
+ * @param x  x [mm-sugg.].
+ * @param y  y [mm-sugg.].
+ * @param z  z [mm-sugg.].
+ * @param roll  roll [mrad-sugg.].
+ * @param pitch  pitch [mrad-sugg.]
+ * @param yaw  yaw [mrad-sugg.]
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
 static inline void mavlink_msg_pose_send(mavlink_channel_t chan, int32_t x, int32_t y, int32_t z, int16_t roll, int16_t pitch, int16_t yaw)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_POSE_LEN];
-	_mav_put_int32_t(buf, 0, x);
-	_mav_put_int32_t(buf, 4, y);
-	_mav_put_int32_t(buf, 8, z);
-	_mav_put_int16_t(buf, 12, roll);
-	_mav_put_int16_t(buf, 14, pitch);
-	_mav_put_int16_t(buf, 16, yaw);
+    char buf[MAVLINK_MSG_ID_POSE_LEN];
+    _mav_put_int32_t(buf, 0, x);
+    _mav_put_int32_t(buf, 4, y);
+    _mav_put_int32_t(buf, 8, z);
+    _mav_put_int16_t(buf, 12, roll);
+    _mav_put_int16_t(buf, 14, pitch);
+    _mav_put_int16_t(buf, 16, yaw);
 
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, buf, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, buf, MAVLINK_MSG_ID_POSE_MIN_LEN, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, buf, MAVLINK_MSG_ID_POSE_LEN);
-#endif
-#else
-	mavlink_pose_t packet;
-	packet.x = x;
-	packet.y = y;
-	packet.z = z;
-	packet.roll = roll;
-	packet.pitch = pitch;
-	packet.yaw = yaw;
+    mavlink_pose_t packet;
+    packet.x = x;
+    packet.y = y;
+    packet.z = z;
+    packet.roll = roll;
+    packet.pitch = pitch;
+    packet.yaw = yaw;
 
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, (const char *)&packet, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, (const char *)&packet, MAVLINK_MSG_ID_POSE_LEN);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, (const char *)&packet, MAVLINK_MSG_ID_POSE_MIN_LEN, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
 #endif
+}
+
+/**
+ * @brief Send a pose message
+ * @param chan MAVLink channel to send the message
+ * @param struct The MAVLink struct to serialize
+ */
+static inline void mavlink_msg_pose_send_struct(mavlink_channel_t chan, const mavlink_pose_t* pose)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    mavlink_msg_pose_send(chan, pose->x, pose->y, pose->z, pose->roll, pose->pitch, pose->yaw);
+#else
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, (const char *)pose, MAVLINK_MSG_ID_POSE_MIN_LEN, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
 #endif
 }
 
@@ -212,33 +227,25 @@ static inline void mavlink_msg_pose_send(mavlink_channel_t chan, int32_t x, int3
 static inline void mavlink_msg_pose_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  int32_t x, int32_t y, int32_t z, int16_t roll, int16_t pitch, int16_t yaw)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_int32_t(buf, 0, x);
-	_mav_put_int32_t(buf, 4, y);
-	_mav_put_int32_t(buf, 8, z);
-	_mav_put_int16_t(buf, 12, roll);
-	_mav_put_int16_t(buf, 14, pitch);
-	_mav_put_int16_t(buf, 16, yaw);
+    char *buf = (char *)msgbuf;
+    _mav_put_int32_t(buf, 0, x);
+    _mav_put_int32_t(buf, 4, y);
+    _mav_put_int32_t(buf, 8, z);
+    _mav_put_int16_t(buf, 12, roll);
+    _mav_put_int16_t(buf, 14, pitch);
+    _mav_put_int16_t(buf, 16, yaw);
 
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, buf, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, buf, MAVLINK_MSG_ID_POSE_MIN_LEN, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, buf, MAVLINK_MSG_ID_POSE_LEN);
-#endif
-#else
-	mavlink_pose_t *packet = (mavlink_pose_t *)msgbuf;
-	packet->x = x;
-	packet->y = y;
-	packet->z = z;
-	packet->roll = roll;
-	packet->pitch = pitch;
-	packet->yaw = yaw;
+    mavlink_pose_t *packet = (mavlink_pose_t *)msgbuf;
+    packet->x = x;
+    packet->y = y;
+    packet->z = z;
+    packet->roll = roll;
+    packet->pitch = pitch;
+    packet->yaw = yaw;
 
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, (const char *)packet, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, (const char *)packet, MAVLINK_MSG_ID_POSE_LEN);
-#endif
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_POSE, (const char *)packet, MAVLINK_MSG_ID_POSE_MIN_LEN, MAVLINK_MSG_ID_POSE_LEN, MAVLINK_MSG_ID_POSE_CRC);
 #endif
 }
 #endif
@@ -251,61 +258,61 @@ static inline void mavlink_msg_pose_send_buf(mavlink_message_t *msgbuf, mavlink_
 /**
  * @brief Get field x from pose message
  *
- * @return x [mm-sugg.].
+ * @return  x [mm-sugg.].
  */
 static inline int32_t mavlink_msg_pose_get_x(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int32_t(msg,  0);
+    return _MAV_RETURN_int32_t(msg,  0);
 }
 
 /**
  * @brief Get field y from pose message
  *
- * @return y [mm-sugg.].
+ * @return  y [mm-sugg.].
  */
 static inline int32_t mavlink_msg_pose_get_y(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int32_t(msg,  4);
+    return _MAV_RETURN_int32_t(msg,  4);
 }
 
 /**
  * @brief Get field z from pose message
  *
- * @return z [mm-sugg.].
+ * @return  z [mm-sugg.].
  */
 static inline int32_t mavlink_msg_pose_get_z(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int32_t(msg,  8);
+    return _MAV_RETURN_int32_t(msg,  8);
 }
 
 /**
  * @brief Get field roll from pose message
  *
- * @return roll [mrad-sugg.].
+ * @return  roll [mrad-sugg.].
  */
 static inline int16_t mavlink_msg_pose_get_roll(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int16_t(msg,  12);
+    return _MAV_RETURN_int16_t(msg,  12);
 }
 
 /**
  * @brief Get field pitch from pose message
  *
- * @return pitch [mrad-sugg.]
+ * @return  pitch [mrad-sugg.]
  */
 static inline int16_t mavlink_msg_pose_get_pitch(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int16_t(msg,  14);
+    return _MAV_RETURN_int16_t(msg,  14);
 }
 
 /**
  * @brief Get field yaw from pose message
  *
- * @return yaw [mrad-sugg.]
+ * @return  yaw [mrad-sugg.]
  */
 static inline int16_t mavlink_msg_pose_get_yaw(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int16_t(msg,  16);
+    return _MAV_RETURN_int16_t(msg,  16);
 }
 
 /**
@@ -316,14 +323,16 @@ static inline int16_t mavlink_msg_pose_get_yaw(const mavlink_message_t* msg)
  */
 static inline void mavlink_msg_pose_decode(const mavlink_message_t* msg, mavlink_pose_t* pose)
 {
-#if MAVLINK_NEED_BYTE_SWAP
-	pose->x = mavlink_msg_pose_get_x(msg);
-	pose->y = mavlink_msg_pose_get_y(msg);
-	pose->z = mavlink_msg_pose_get_z(msg);
-	pose->roll = mavlink_msg_pose_get_roll(msg);
-	pose->pitch = mavlink_msg_pose_get_pitch(msg);
-	pose->yaw = mavlink_msg_pose_get_yaw(msg);
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    pose->x = mavlink_msg_pose_get_x(msg);
+    pose->y = mavlink_msg_pose_get_y(msg);
+    pose->z = mavlink_msg_pose_get_z(msg);
+    pose->roll = mavlink_msg_pose_get_roll(msg);
+    pose->pitch = mavlink_msg_pose_get_pitch(msg);
+    pose->yaw = mavlink_msg_pose_get_yaw(msg);
 #else
-	memcpy(pose, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_POSE_LEN);
+        uint8_t len = msg->len < MAVLINK_MSG_ID_POSE_LEN? msg->len : MAVLINK_MSG_ID_POSE_LEN;
+        memset(pose, 0, MAVLINK_MSG_ID_POSE_LEN);
+    memcpy(pose, _MAV_PAYLOAD(msg), len);
 #endif
 }

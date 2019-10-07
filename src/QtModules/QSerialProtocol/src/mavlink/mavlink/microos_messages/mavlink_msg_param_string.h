@@ -1,17 +1,20 @@
+#pragma once
 // MESSAGE PARAM_STRING PACKING
 
 #define MAVLINK_MSG_ID_PARAM_STRING 12
 
-typedef struct __mavlink_param_string_t
-{
- uint16_t pointer; ///< First register that was read
- char ID; ///< Partition ID - make this a general purpose message
- char name[8]; ///< Parameter name
- char value[32]; ///< Parameter value
-} mavlink_param_string_t;
+MAVPACKED(
+typedef struct __mavlink_param_string_t {
+ uint16_t pointer; /*<  First register that was read*/
+ char ID; /*<  Partition ID - make this a general purpose message*/
+ char name[8]; /*<  Parameter name*/
+ char value[32]; /*<  Parameter value*/
+}) mavlink_param_string_t;
 
 #define MAVLINK_MSG_ID_PARAM_STRING_LEN 43
+#define MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN 43
 #define MAVLINK_MSG_ID_12_LEN 43
+#define MAVLINK_MSG_ID_12_MIN_LEN 43
 
 #define MAVLINK_MSG_ID_PARAM_STRING_CRC 251
 #define MAVLINK_MSG_ID_12_CRC 251
@@ -19,16 +22,28 @@ typedef struct __mavlink_param_string_t
 #define MAVLINK_MSG_PARAM_STRING_FIELD_NAME_LEN 8
 #define MAVLINK_MSG_PARAM_STRING_FIELD_VALUE_LEN 32
 
+#if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_PARAM_STRING { \
-	"PARAM_STRING", \
-	4, \
-	{  { "pointer", NULL, MAVLINK_TYPE_UINT16_T, 0, 0, offsetof(mavlink_param_string_t, pointer) }, \
-         { "ID", NULL, MAVLINK_TYPE_CHAR, 0, 2, offsetof(mavlink_param_string_t, ID) }, \
+    12, \
+    "PARAM_STRING", \
+    4, \
+    {  { "ID", NULL, MAVLINK_TYPE_CHAR, 0, 2, offsetof(mavlink_param_string_t, ID) }, \
+         { "pointer", NULL, MAVLINK_TYPE_UINT16_T, 0, 0, offsetof(mavlink_param_string_t, pointer) }, \
          { "name", NULL, MAVLINK_TYPE_CHAR, 8, 3, offsetof(mavlink_param_string_t, name) }, \
          { "value", NULL, MAVLINK_TYPE_CHAR, 32, 11, offsetof(mavlink_param_string_t, value) }, \
          } \
 }
-
+#else
+#define MAVLINK_MESSAGE_INFO_PARAM_STRING { \
+    "PARAM_STRING", \
+    4, \
+    {  { "ID", NULL, MAVLINK_TYPE_CHAR, 0, 2, offsetof(mavlink_param_string_t, ID) }, \
+         { "pointer", NULL, MAVLINK_TYPE_UINT16_T, 0, 0, offsetof(mavlink_param_string_t, pointer) }, \
+         { "name", NULL, MAVLINK_TYPE_CHAR, 8, 3, offsetof(mavlink_param_string_t, name) }, \
+         { "value", NULL, MAVLINK_TYPE_CHAR, 32, 11, offsetof(mavlink_param_string_t, value) }, \
+         } \
+}
+#endif
 
 /**
  * @brief Pack a param_string message
@@ -36,37 +51,33 @@ typedef struct __mavlink_param_string_t
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param msg The MAVLink message to compress the data into
  *
- * @param ID Partition ID - make this a general purpose message
- * @param pointer First register that was read
- * @param name Parameter name
- * @param value Parameter value
+ * @param ID  Partition ID - make this a general purpose message
+ * @param pointer  First register that was read
+ * @param name  Parameter name
+ * @param value  Parameter value
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_param_string_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       char ID, uint16_t pointer, const char *name, const char *value)
+                               char ID, uint16_t pointer, const char *name, const char *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_PARAM_STRING_LEN];
-	_mav_put_uint16_t(buf, 0, pointer);
-	_mav_put_char(buf, 2, ID);
-	_mav_put_char_array(buf, 3, name, 8);
-	_mav_put_char_array(buf, 11, value, 32);
+    char buf[MAVLINK_MSG_ID_PARAM_STRING_LEN];
+    _mav_put_uint16_t(buf, 0, pointer);
+    _mav_put_char(buf, 2, ID);
+    _mav_put_char_array(buf, 3, name, 8);
+    _mav_put_char_array(buf, 11, value, 32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_PARAM_STRING_LEN);
 #else
-	mavlink_param_string_t packet;
-	packet.pointer = pointer;
-	packet.ID = ID;
-	mav_array_memcpy(packet.name, name, sizeof(char)*8);
-	mav_array_memcpy(packet.value, value, sizeof(char)*32);
+    mavlink_param_string_t packet;
+    packet.pointer = pointer;
+    packet.ID = ID;
+    mav_array_memcpy(packet.name, name, sizeof(char)*8);
+    mav_array_memcpy(packet.value, value, sizeof(char)*32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_PARAM_STRING_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_PARAM_STRING;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
-#else
-    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_PARAM_STRING_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_PARAM_STRING;
+    return mavlink_finalize_message(msg, system_id, component_id, MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
 }
 
 /**
@@ -75,38 +86,34 @@ static inline uint16_t mavlink_msg_param_string_pack(uint8_t system_id, uint8_t 
  * @param component_id ID of this component (e.g. 200 for IMU)
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
- * @param ID Partition ID - make this a general purpose message
- * @param pointer First register that was read
- * @param name Parameter name
- * @param value Parameter value
+ * @param ID  Partition ID - make this a general purpose message
+ * @param pointer  First register that was read
+ * @param name  Parameter name
+ * @param value  Parameter value
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_param_string_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
-							   mavlink_message_t* msg,
-						           char ID,uint16_t pointer,const char *name,const char *value)
+                               mavlink_message_t* msg,
+                                   char ID,uint16_t pointer,const char *name,const char *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_PARAM_STRING_LEN];
-	_mav_put_uint16_t(buf, 0, pointer);
-	_mav_put_char(buf, 2, ID);
-	_mav_put_char_array(buf, 3, name, 8);
-	_mav_put_char_array(buf, 11, value, 32);
+    char buf[MAVLINK_MSG_ID_PARAM_STRING_LEN];
+    _mav_put_uint16_t(buf, 0, pointer);
+    _mav_put_char(buf, 2, ID);
+    _mav_put_char_array(buf, 3, name, 8);
+    _mav_put_char_array(buf, 11, value, 32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_PARAM_STRING_LEN);
 #else
-	mavlink_param_string_t packet;
-	packet.pointer = pointer;
-	packet.ID = ID;
-	mav_array_memcpy(packet.name, name, sizeof(char)*8);
-	mav_array_memcpy(packet.value, value, sizeof(char)*32);
+    mavlink_param_string_t packet;
+    packet.pointer = pointer;
+    packet.ID = ID;
+    mav_array_memcpy(packet.name, name, sizeof(char)*8);
+    mav_array_memcpy(packet.value, value, sizeof(char)*32);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_PARAM_STRING_LEN);
 #endif
 
-	msg->msgid = MAVLINK_MSG_ID_PARAM_STRING;
-#if MAVLINK_CRC_EXTRA
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
-#else
-    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_PARAM_STRING_LEN);
-#endif
+    msg->msgid = MAVLINK_MSG_ID_PARAM_STRING;
+    return mavlink_finalize_message_chan(msg, system_id, component_id, chan, MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
 }
 
 /**
@@ -119,7 +126,7 @@ static inline uint16_t mavlink_msg_param_string_pack_chan(uint8_t system_id, uin
  */
 static inline uint16_t mavlink_msg_param_string_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_param_string_t* param_string)
 {
-	return mavlink_msg_param_string_pack(system_id, component_id, msg, param_string->ID, param_string->pointer, param_string->name, param_string->value);
+    return mavlink_msg_param_string_pack(system_id, component_id, msg, param_string->ID, param_string->pointer, param_string->name, param_string->value);
 }
 
 /**
@@ -133,44 +140,50 @@ static inline uint16_t mavlink_msg_param_string_encode(uint8_t system_id, uint8_
  */
 static inline uint16_t mavlink_msg_param_string_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_param_string_t* param_string)
 {
-	return mavlink_msg_param_string_pack_chan(system_id, component_id, chan, msg, param_string->ID, param_string->pointer, param_string->name, param_string->value);
+    return mavlink_msg_param_string_pack_chan(system_id, component_id, chan, msg, param_string->ID, param_string->pointer, param_string->name, param_string->value);
 }
 
 /**
  * @brief Send a param_string message
  * @param chan MAVLink channel to send the message
  *
- * @param ID Partition ID - make this a general purpose message
- * @param pointer First register that was read
- * @param name Parameter name
- * @param value Parameter value
+ * @param ID  Partition ID - make this a general purpose message
+ * @param pointer  First register that was read
+ * @param name  Parameter name
+ * @param value  Parameter value
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
 static inline void mavlink_msg_param_string_send(mavlink_channel_t chan, char ID, uint16_t pointer, const char *name, const char *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char buf[MAVLINK_MSG_ID_PARAM_STRING_LEN];
-	_mav_put_uint16_t(buf, 0, pointer);
-	_mav_put_char(buf, 2, ID);
-	_mav_put_char_array(buf, 3, name, 8);
-	_mav_put_char_array(buf, 11, value, 32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, buf, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
+    char buf[MAVLINK_MSG_ID_PARAM_STRING_LEN];
+    _mav_put_uint16_t(buf, 0, pointer);
+    _mav_put_char(buf, 2, ID);
+    _mav_put_char_array(buf, 3, name, 8);
+    _mav_put_char_array(buf, 11, value, 32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, buf, MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, buf, MAVLINK_MSG_ID_PARAM_STRING_LEN);
+    mavlink_param_string_t packet;
+    packet.pointer = pointer;
+    packet.ID = ID;
+    mav_array_memcpy(packet.name, name, sizeof(char)*8);
+    mav_array_memcpy(packet.value, value, sizeof(char)*32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, (const char *)&packet, MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
 #endif
+}
+
+/**
+ * @brief Send a param_string message
+ * @param chan MAVLink channel to send the message
+ * @param struct The MAVLink struct to serialize
+ */
+static inline void mavlink_msg_param_string_send_struct(mavlink_channel_t chan, const mavlink_param_string_t* param_string)
+{
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    mavlink_msg_param_string_send(chan, param_string->ID, param_string->pointer, param_string->name, param_string->value);
 #else
-	mavlink_param_string_t packet;
-	packet.pointer = pointer;
-	packet.ID = ID;
-	mav_array_memcpy(packet.name, name, sizeof(char)*8);
-	mav_array_memcpy(packet.value, value, sizeof(char)*32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, (const char *)&packet, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, (const char *)&packet, MAVLINK_MSG_ID_PARAM_STRING_LEN);
-#endif
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, (const char *)param_string, MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
 #endif
 }
 
@@ -185,27 +198,19 @@ static inline void mavlink_msg_param_string_send(mavlink_channel_t chan, char ID
 static inline void mavlink_msg_param_string_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  char ID, uint16_t pointer, const char *name, const char *value)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-	char *buf = (char *)msgbuf;
-	_mav_put_uint16_t(buf, 0, pointer);
-	_mav_put_char(buf, 2, ID);
-	_mav_put_char_array(buf, 3, name, 8);
-	_mav_put_char_array(buf, 11, value, 32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, buf, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
+    char *buf = (char *)msgbuf;
+    _mav_put_uint16_t(buf, 0, pointer);
+    _mav_put_char(buf, 2, ID);
+    _mav_put_char_array(buf, 3, name, 8);
+    _mav_put_char_array(buf, 11, value, 32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, buf, MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
 #else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, buf, MAVLINK_MSG_ID_PARAM_STRING_LEN);
-#endif
-#else
-	mavlink_param_string_t *packet = (mavlink_param_string_t *)msgbuf;
-	packet->pointer = pointer;
-	packet->ID = ID;
-	mav_array_memcpy(packet->name, name, sizeof(char)*8);
-	mav_array_memcpy(packet->value, value, sizeof(char)*32);
-#if MAVLINK_CRC_EXTRA
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, (const char *)packet, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
-#else
-    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, (const char *)packet, MAVLINK_MSG_ID_PARAM_STRING_LEN);
-#endif
+    mavlink_param_string_t *packet = (mavlink_param_string_t *)msgbuf;
+    packet->pointer = pointer;
+    packet->ID = ID;
+    mav_array_memcpy(packet->name, name, sizeof(char)*8);
+    mav_array_memcpy(packet->value, value, sizeof(char)*32);
+    _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_PARAM_STRING, (const char *)packet, MAVLINK_MSG_ID_PARAM_STRING_MIN_LEN, MAVLINK_MSG_ID_PARAM_STRING_LEN, MAVLINK_MSG_ID_PARAM_STRING_CRC);
 #endif
 }
 #endif
@@ -218,41 +223,41 @@ static inline void mavlink_msg_param_string_send_buf(mavlink_message_t *msgbuf, 
 /**
  * @brief Get field ID from param_string message
  *
- * @return Partition ID - make this a general purpose message
+ * @return  Partition ID - make this a general purpose message
  */
 static inline char mavlink_msg_param_string_get_ID(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_char(msg,  2);
+    return _MAV_RETURN_char(msg,  2);
 }
 
 /**
  * @brief Get field pointer from param_string message
  *
- * @return First register that was read
+ * @return  First register that was read
  */
 static inline uint16_t mavlink_msg_param_string_get_pointer(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint16_t(msg,  0);
+    return _MAV_RETURN_uint16_t(msg,  0);
 }
 
 /**
  * @brief Get field name from param_string message
  *
- * @return Parameter name
+ * @return  Parameter name
  */
 static inline uint16_t mavlink_msg_param_string_get_name(const mavlink_message_t* msg, char *name)
 {
-	return _MAV_RETURN_char_array(msg, name, 8,  3);
+    return _MAV_RETURN_char_array(msg, name, 8,  3);
 }
 
 /**
  * @brief Get field value from param_string message
  *
- * @return Parameter value
+ * @return  Parameter value
  */
 static inline uint16_t mavlink_msg_param_string_get_value(const mavlink_message_t* msg, char *value)
 {
-	return _MAV_RETURN_char_array(msg, value, 32,  11);
+    return _MAV_RETURN_char_array(msg, value, 32,  11);
 }
 
 /**
@@ -263,12 +268,14 @@ static inline uint16_t mavlink_msg_param_string_get_value(const mavlink_message_
  */
 static inline void mavlink_msg_param_string_decode(const mavlink_message_t* msg, mavlink_param_string_t* param_string)
 {
-#if MAVLINK_NEED_BYTE_SWAP
-	param_string->pointer = mavlink_msg_param_string_get_pointer(msg);
-	param_string->ID = mavlink_msg_param_string_get_ID(msg);
-	mavlink_msg_param_string_get_name(msg, param_string->name);
-	mavlink_msg_param_string_get_value(msg, param_string->value);
+#if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
+    param_string->pointer = mavlink_msg_param_string_get_pointer(msg);
+    param_string->ID = mavlink_msg_param_string_get_ID(msg);
+    mavlink_msg_param_string_get_name(msg, param_string->name);
+    mavlink_msg_param_string_get_value(msg, param_string->value);
 #else
-	memcpy(param_string, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_PARAM_STRING_LEN);
+        uint8_t len = msg->len < MAVLINK_MSG_ID_PARAM_STRING_LEN? msg->len : MAVLINK_MSG_ID_PARAM_STRING_LEN;
+        memset(param_string, 0, MAVLINK_MSG_ID_PARAM_STRING_LEN);
+    memcpy(param_string, _MAV_PAYLOAD(msg), len);
 #endif
 }
