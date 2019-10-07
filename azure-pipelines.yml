@@ -176,9 +176,9 @@ stages:
         echo "Create release from tag..."
         python2 github-api.py 'create-release'
         echo "Upload assets to release..."
-        python2 github-api.py 'upload-assets' 'linux-x64-develop' '../../../build-linux/linux-x86_64.zip'
-        python2 github-api.py 'upload-assets' 'windows-x64-develop' '../../../build-windows/windows-x86_64.zip'
-        python2 github-api.py 'upload-assets' 'mac-x64-develop' '../../../build-mac/mac-x86_64.zip'
+        python2 github-api.py 'upload-assets' 'linux-x64' '../../../build-linux/linux-x86_64.zip'
+        python2 github-api.py 'upload-assets' 'windows-x64' '../../../build-windows/windows-x86_64.zip'
+        python2 github-api.py 'upload-assets' 'mac-x64' '../../../build-mac/mac-x86_64.zip'
       env:
         TOKEN: $(token)
         USER: $(user)
