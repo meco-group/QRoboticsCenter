@@ -17,12 +17,12 @@ public:
     void restoreState(QString group);
 
 private:
-    QGPIOWidget *_gpio;
+    QGPIOWidget *_gpiox;
 
 public slots:
-    virtual void receive(gpio_t);
+    virtual void receive(gpiox_t);
     void onEventButtonPressed(int b);
-    void onOutputSet(gpio_t gpio);
+    void onOutputSet(gpiox_t gpiox);
 
 };
 

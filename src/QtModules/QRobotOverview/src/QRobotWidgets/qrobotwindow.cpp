@@ -16,7 +16,7 @@ QRobotWindow::QRobotWindow(QAbstractRobot *robot, QWidget *parent) :
     setWindowTitle(robot->objectName());
     //setWindowIcon(robot->icon());
 
-    addView(_gpio->w());
+    addView(_gpiox->w());
     menuBar()->setNativeMenuBar(false); // Set menubar not native as it causes command tab not to be displayed
 
     // Setup threading
@@ -33,7 +33,7 @@ QRobotWindow::QRobotWindow(QAbstractRobot *robot, QWidget *parent) :
     _recorders_menu = _recorder->menu();
     menuBar()->addMenu(_recorders_menu);
     statusBar()->addPermanentWidget(_recorder);
-    QGPIORecorder *rec = new QGPIORecorder(_gpio->gpiow(), this);
+    QGPIORecorder *rec = new QGPIORecorder(_gpiox->gpiow(), this);
     _recorder->add(rec);
     _recorder->setQuickRecord(rec);
 
@@ -55,7 +55,7 @@ QRobotWindow::QRobotWindow(QAbstractRobot *robot, QWidget *parent) :
 
 void QRobotWindow::handleNewConnection(QSerialProtocol *connection)
 {
-    _gpio->connectTo(connection);
+    _gpiox->connectTo(connection);
     _recorder->connectTo(connection);
     _threading_info_dock->datanode()->connectTo(connection);
     _parameter_dock->datanode()->connectTo(connection);
@@ -80,9 +80,9 @@ void QRobotWindow::statusText(QString text)
     statusBar()->showMessage(text, 5000);
 }
 
-QGPIODataNodeWidget *QRobotWindow::gpio()
+QGPIODataNodeWidget *QRobotWindow::gpiox()
 {
-    return _gpio;
+    return _gpiox;
 }
 
 QAbstractRobot *QRobotWindow::robot()
@@ -103,7 +103,7 @@ void QRobotWindow::showEvent(QShowEvent *)
     QMainWindow::restoreState(settings.value("windowState").toByteArray());
     settings.endGroup();
 
-    _gpio->restoreState(group());
+    _gpiox->restoreState(group());
 }
 
 void QRobotWindow::closeEvent(QCloseEvent *)
@@ -115,7 +115,7 @@ void QRobotWindow::closeEvent(QCloseEvent *)
         settings.setValue("windowState", saveState());
         settings.endGroup();
 
-        _gpio->saveState(group());
+        _gpiox->saveState(group());
 
         emit closing();
     }

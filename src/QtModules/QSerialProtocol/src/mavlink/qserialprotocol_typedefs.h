@@ -6,6 +6,7 @@
 
 typedef mavlink_heartbeat_t heartbeat_t;
 typedef mavlink_gpio_t gpio_t;
+typedef mavlink_gpiox_t gpiox_t;
 typedef mavlink_print_t print_t;
 typedef mavlink_thread_info_t thread_info_t;
 typedef mavlink_event_t event_t;
@@ -27,6 +28,7 @@ typedef mavlink_pose_t pose_t;
 
 Q_DECLARE_METATYPE(heartbeat_t)
 Q_DECLARE_METATYPE(gpio_t)
+Q_DECLARE_METATYPE(gpiox_t)
 Q_DECLARE_METATYPE(print_t)
 Q_DECLARE_METATYPE(thread_info_t)
 Q_DECLARE_METATYPE(event_t)

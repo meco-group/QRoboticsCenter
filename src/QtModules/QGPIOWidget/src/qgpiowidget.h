@@ -18,10 +18,9 @@
 
 #include <qserialprotocol.h>
 
-#define QGPIOWIDGET_FLOAT_COUNT 8
-#define QGPIOWIDGET_INT_COUNT   4
-#define QGPIOWIDGET_IOCOUNT     12
-#define QGPIOWIDGET_BUTTONCOUNT 8
+#define QGPIOWIDGET_FLOAT_COUNT MAVLINK_MSG_GPIOX_FIELD_GPIO_FLOAT_LEN
+#define QGPIOWIDGET_IOCOUNT     MAVLINK_MSG_GPIOX_FIELD_GPIO_FLOAT_LEN
+#define QGPIOWIDGET_BUTTONCOUNT 4
 
 namespace Ui {
 class QGPIOWidget;
@@ -43,21 +42,18 @@ private:
     Ui::QGPIOWidget *ui;
 
     QGridLayout* _input_layout;
-    QGeneralInputFloat* _float_inputs[8];
-    QGeneralInputInt* _int_inputs[4];
+    QGeneralInputFloat* _float_inputs[QGPIOWIDGET_FLOAT_COUNT];
 
     QRunningPlot* plot;
 
     QBoxLayout* _output_layout;
-    QGeneralOutputFloat* _float_outputs[8];
-    QGeneralOutputInt* _int_outputs[4];
+    QGeneralOutputFloat* _float_outputs[QGPIOWIDGET_FLOAT_COUNT];
     QPushButton* set_button;
 
     QGridLayout* grid_layout_buttons;
     QButtonGroup buttons;
 
     QVector<float> double_list;
-    QVector<int> integer_list;
 
     double _time;
     bool _paused;
@@ -71,7 +67,7 @@ private:
     bool paused();
 
 public slots:
-    void setInput(gpio_t gpio);
+    void setInput(gpiox_t gpiox);
     void sendButtonEvent(int id);
     void inputLabelsSend();
 
@@ -84,7 +80,7 @@ private slots:
 
 signals:
     void eventButtonPressed(int b);
-    void setOutput(gpio_t gpio);
+    void setOutput(gpiox_t gpiox);
     void inputLabelsSet(QStringList labels);
 };
 

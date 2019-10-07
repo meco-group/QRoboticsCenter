@@ -6,18 +6,18 @@
 MAVPACKED(
 typedef struct __mavlink_gpiox_t {
  uint32_t time; /*<  Time at which the message was sent*/
- float gpio_float[16]; /*<  16 gpio floating point values*/
+ float gpio_float[12]; /*<  12 gpio floating point values*/
 }) mavlink_gpiox_t;
 
-#define MAVLINK_MSG_ID_GPIOX_LEN 68
-#define MAVLINK_MSG_ID_GPIOX_MIN_LEN 68
-#define MAVLINK_MSG_ID_14_LEN 68
-#define MAVLINK_MSG_ID_14_MIN_LEN 68
+#define MAVLINK_MSG_ID_GPIOX_LEN 52
+#define MAVLINK_MSG_ID_GPIOX_MIN_LEN 52
+#define MAVLINK_MSG_ID_14_LEN 52
+#define MAVLINK_MSG_ID_14_MIN_LEN 52
 
-#define MAVLINK_MSG_ID_GPIOX_CRC 234
-#define MAVLINK_MSG_ID_14_CRC 234
+#define MAVLINK_MSG_ID_GPIOX_CRC 221
+#define MAVLINK_MSG_ID_14_CRC 221
 
-#define MAVLINK_MSG_GPIOX_FIELD_GPIO_FLOAT_LEN 16
+#define MAVLINK_MSG_GPIOX_FIELD_GPIO_FLOAT_LEN 12
 
 #if MAVLINK_COMMAND_24BIT
 #define MAVLINK_MESSAGE_INFO_GPIOX { \
@@ -25,7 +25,7 @@ typedef struct __mavlink_gpiox_t {
     "GPIOX", \
     2, \
     {  { "time", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_gpiox_t, time) }, \
-         { "gpio_float", NULL, MAVLINK_TYPE_FLOAT, 16, 4, offsetof(mavlink_gpiox_t, gpio_float) }, \
+         { "gpio_float", NULL, MAVLINK_TYPE_FLOAT, 12, 4, offsetof(mavlink_gpiox_t, gpio_float) }, \
          } \
 }
 #else
@@ -33,7 +33,7 @@ typedef struct __mavlink_gpiox_t {
     "GPIOX", \
     2, \
     {  { "time", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_gpiox_t, time) }, \
-         { "gpio_float", NULL, MAVLINK_TYPE_FLOAT, 16, 4, offsetof(mavlink_gpiox_t, gpio_float) }, \
+         { "gpio_float", NULL, MAVLINK_TYPE_FLOAT, 12, 4, offsetof(mavlink_gpiox_t, gpio_float) }, \
          } \
 }
 #endif
@@ -45,7 +45,7 @@ typedef struct __mavlink_gpiox_t {
  * @param msg The MAVLink message to compress the data into
  *
  * @param time  Time at which the message was sent
- * @param gpio_float  16 gpio floating point values
+ * @param gpio_float  12 gpio floating point values
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gpiox_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
@@ -54,12 +54,12 @@ static inline uint16_t mavlink_msg_gpiox_pack(uint8_t system_id, uint8_t compone
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_GPIOX_LEN];
     _mav_put_uint32_t(buf, 0, time);
-    _mav_put_float_array(buf, 4, gpio_float, 16);
+    _mav_put_float_array(buf, 4, gpio_float, 12);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GPIOX_LEN);
 #else
     mavlink_gpiox_t packet;
     packet.time = time;
-    mav_array_memcpy(packet.gpio_float, gpio_float, sizeof(float)*16);
+    mav_array_memcpy(packet.gpio_float, gpio_float, sizeof(float)*12);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GPIOX_LEN);
 #endif
 
@@ -74,7 +74,7 @@ static inline uint16_t mavlink_msg_gpiox_pack(uint8_t system_id, uint8_t compone
  * @param chan The MAVLink channel this message will be sent over
  * @param msg The MAVLink message to compress the data into
  * @param time  Time at which the message was sent
- * @param gpio_float  16 gpio floating point values
+ * @param gpio_float  12 gpio floating point values
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_gpiox_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
@@ -84,12 +84,12 @@ static inline uint16_t mavlink_msg_gpiox_pack_chan(uint8_t system_id, uint8_t co
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_GPIOX_LEN];
     _mav_put_uint32_t(buf, 0, time);
-    _mav_put_float_array(buf, 4, gpio_float, 16);
+    _mav_put_float_array(buf, 4, gpio_float, 12);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GPIOX_LEN);
 #else
     mavlink_gpiox_t packet;
     packet.time = time;
-    mav_array_memcpy(packet.gpio_float, gpio_float, sizeof(float)*16);
+    mav_array_memcpy(packet.gpio_float, gpio_float, sizeof(float)*12);
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GPIOX_LEN);
 #endif
 
@@ -129,7 +129,7 @@ static inline uint16_t mavlink_msg_gpiox_encode_chan(uint8_t system_id, uint8_t 
  * @param chan MAVLink channel to send the message
  *
  * @param time  Time at which the message was sent
- * @param gpio_float  16 gpio floating point values
+ * @param gpio_float  12 gpio floating point values
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
@@ -138,12 +138,12 @@ static inline void mavlink_msg_gpiox_send(mavlink_channel_t chan, uint32_t time,
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_GPIOX_LEN];
     _mav_put_uint32_t(buf, 0, time);
-    _mav_put_float_array(buf, 4, gpio_float, 16);
+    _mav_put_float_array(buf, 4, gpio_float, 12);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GPIOX, buf, MAVLINK_MSG_ID_GPIOX_MIN_LEN, MAVLINK_MSG_ID_GPIOX_LEN, MAVLINK_MSG_ID_GPIOX_CRC);
 #else
     mavlink_gpiox_t packet;
     packet.time = time;
-    mav_array_memcpy(packet.gpio_float, gpio_float, sizeof(float)*16);
+    mav_array_memcpy(packet.gpio_float, gpio_float, sizeof(float)*12);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GPIOX, (const char *)&packet, MAVLINK_MSG_ID_GPIOX_MIN_LEN, MAVLINK_MSG_ID_GPIOX_LEN, MAVLINK_MSG_ID_GPIOX_CRC);
 #endif
 }
@@ -175,12 +175,12 @@ static inline void mavlink_msg_gpiox_send_buf(mavlink_message_t *msgbuf, mavlink
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
     _mav_put_uint32_t(buf, 0, time);
-    _mav_put_float_array(buf, 4, gpio_float, 16);
+    _mav_put_float_array(buf, 4, gpio_float, 12);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GPIOX, buf, MAVLINK_MSG_ID_GPIOX_MIN_LEN, MAVLINK_MSG_ID_GPIOX_LEN, MAVLINK_MSG_ID_GPIOX_CRC);
 #else
     mavlink_gpiox_t *packet = (mavlink_gpiox_t *)msgbuf;
     packet->time = time;
-    mav_array_memcpy(packet->gpio_float, gpio_float, sizeof(float)*16);
+    mav_array_memcpy(packet->gpio_float, gpio_float, sizeof(float)*12);
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GPIOX, (const char *)packet, MAVLINK_MSG_ID_GPIOX_MIN_LEN, MAVLINK_MSG_ID_GPIOX_LEN, MAVLINK_MSG_ID_GPIOX_CRC);
 #endif
 }
@@ -204,11 +204,11 @@ static inline uint32_t mavlink_msg_gpiox_get_time(const mavlink_message_t* msg)
 /**
  * @brief Get field gpio_float from gpiox message
  *
- * @return  16 gpio floating point values
+ * @return  12 gpio floating point values
  */
 static inline uint16_t mavlink_msg_gpiox_get_gpio_float(const mavlink_message_t* msg, float *gpio_float)
 {
-    return _MAV_RETURN_float_array(msg, gpio_float, 16,  4);
+    return _MAV_RETURN_float_array(msg, gpio_float, 12,  4);
 }
 
 /**

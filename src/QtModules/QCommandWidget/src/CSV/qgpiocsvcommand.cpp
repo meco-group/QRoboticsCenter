@@ -1,27 +1,20 @@
 #include "qgpiocsvcommand.h"
 
-QGpioCsvCommand::QGpioCsvCommand(QWidget *parent) :
-    QCsvReaderDataNodeWidget("gpio",parent)
-{
-
+QGpioCsvCommand::QGpioCsvCommand(QWidget *parent) : QCsvReaderDataNodeWidget("gpiox", parent) {
+  // ...
 }
 
-void QGpioCsvCommand::transmit_packet()
-{
-    int k = 0;
-    gpio_t gpio;
+void QGpioCsvCommand::transmit_packet() {
+  gpiox_t gpiox;
 
-    QList<double> values = _csv_reader->readLine();
-    while(values.length() < 12)
-        values.append(0.0);
+  QList<double> values = _csv_reader->readLine();
+  while(values.length() < QGPIOWIDGET_FLOAT_COUNT)
+    values.append(0.0);
 
-    QListIterator<double> i(values);
-    for(k=0;k<8;k++){
-        gpio.gpio_float[k] = i.next();
-    }
-    for(k=0;k<4;k++){
-        gpio.gpio_int[k] = i.next();
-    }
+  QListIterator<double> it(values);
+  for(int k=0; k<QGPIOWIDGET_FLOAT_COUNT; k++) {
+    gpiox.gpio_float[k] = it.next();
+  }
 
-    emit transmit(gpio);
+  emit transmit(gpiox);
 }

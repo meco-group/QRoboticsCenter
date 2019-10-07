@@ -54,10 +54,10 @@ private:
 
 };
 
-class QGpioUdpSender: public QTUdpSender<mavlink_gpio_t>{
+class QGpioUdpSender: public QTUdpSender<gpiox_t>{
 public:
     QGpioUdpSender(QWidget *parent) :
-        QTUdpSender<mavlink_gpio_t>("gpio",parent)
+        QTUdpSender<gpiox_t>("gpiox", parent)
     {}
 };
 

@@ -18,6 +18,7 @@ void QDataNode::transmitTo(QDataNode *other)
 
     QDATANODE_CONNECT(heartbeat_t);
     QDATANODE_CONNECT(gpio_t);
+    QDATANODE_CONNECT(gpiox_t);
     QDATANODE_CONNECT(print_t);
     QDATANODE_CONNECT(thread_info_t);
     QDATANODE_CONNECT(event_t);

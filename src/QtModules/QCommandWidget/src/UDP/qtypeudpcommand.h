@@ -49,10 +49,10 @@ private:
 
 };
 
-class QGpioUdpCommand: public QTypeUdpCommand<gpio_t>{
+class QGpioUdpCommand: public QTypeUdpCommand<gpiox_t>{
 public:
     QGpioUdpCommand(QWidget *parent) :
-        QTypeUdpCommand<gpio_t>("gpio",parent)
+        QTypeUdpCommand<gpiox_t>("gpiox",parent)
     {}
 };
 

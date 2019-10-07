@@ -23,7 +23,7 @@ class QRobotWindow : public QStackedWindow
 public:
     explicit QRobotWindow(QAbstractRobot *robot, QWidget *parent = 0);
 
-    QGPIODataNodeWidget *gpio();
+    QGPIODataNodeWidget *gpiox();
     QAbstractRobot *robot();
     QString group();
 
@@ -31,7 +31,7 @@ public:
 
 protected:
     QAbstractRobot *_robot;
-    QGPIODataNodeWidget *_gpio = new QGPIODataNodeWidget(0);
+    QGPIODataNodeWidget *_gpiox = new QGPIODataNodeWidget(0);
     QRecorderWidget *_recorder = new QRecorderWidget(0);
     QThreadingInfoDock *_threading_info_dock;
     QParameterDock *_parameter_dock;

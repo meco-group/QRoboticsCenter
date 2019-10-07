@@ -44,7 +44,7 @@ private:
     void closeEvent(QCloseEvent *e);
 
 signals:
-    void setGpioOutput(mavlink_gpio_t gpio);
+    void setGpioOutput(gpiox_t gpiox);
 
 public slots:
     bool setFile(QString absolute_path);

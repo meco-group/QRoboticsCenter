@@ -26,6 +26,11 @@ void QConnectionInfoDataNodeWidget::receive(gpio_t)
     _widget->receive("gpio");
 }
 
+void QConnectionInfoDataNodeWidget::receive(gpiox_t)
+{
+    _widget->receive("gpiox");
+}
+
 void QConnectionInfoDataNodeWidget::receive(print_t)
 {
     _widget->receive("print");

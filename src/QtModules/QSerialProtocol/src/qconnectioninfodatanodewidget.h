@@ -17,6 +17,7 @@ private:
 public slots:
     virtual void receive(heartbeat_t);
     virtual void receive(gpio_t);
+    virtual void receive(gpiox_t);
     virtual void receive(print_t);
     virtual void receive(event_t);
     virtual void receive(pose_t);

@@ -4,89 +4,72 @@
 QGPIOWidget::QGPIOWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::QGPIOWidget),
-    double_list(QGPIOWIDGET_FLOAT_COUNT,0.0),
-    integer_list(QGPIOWIDGET_INT_COUNT,0),
+    double_list(QGPIOWIDGET_FLOAT_COUNT, 0.0),
     _time(0),
     _paused(false)
 {
-    ui->setupUi(this);
-    ui->plot->init(40,QGPIOWIDGET_IOCOUNT); //make graph with 12 functions
+  ui->setupUi(this);
+  ui->plot->init(40, QGPIOWIDGET_IOCOUNT); //make graph with 12 functions
 
-    _output_layout = new QBoxLayout(QBoxLayout::TopToBottom,0);
-    _input_layout = new QGridLayout(0);
-    grid_layout_buttons = new QGridLayout(0);
-    QObject::connect(&buttons,SIGNAL(buttonClicked(int)),this,SLOT(sendButtonEvent(int)));
+  _output_layout = new QBoxLayout(QBoxLayout::TopToBottom,0);
+  _input_layout = new QGridLayout(0);
+  grid_layout_buttons = new QGridLayout(0);
+  QObject::connect(&buttons, SIGNAL(buttonClicked(int)), this, SLOT(sendButtonEvent(int)));
 
-    int k;
+  int k;
+  for(k = 0; k < QGPIOWIDGET_BUTTONCOUNT; k++) {
+    // Label buttons
+    buttons.addButton(new QPushButton("Button " + QString::number(k), this), k);
+    // Layout buttons
+    grid_layout_buttons->addWidget(buttons.button(k), k, 0);
+  }
 
-    for(k = 0;k < 8;k++){
-        // Label buttons
-        buttons.addButton(new QPushButton("Button " + QString::number(k),this),k);
-    }
+  for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
+    // Outputs floats
+    _float_outputs[k] = new QGeneralOutputFloat();
+    _output_layout->addWidget(_float_outputs[k]);
+  }
 
-    for(k = 0;k < QGPIOWIDGET_FLOAT_COUNT;k++){
-        // Outputs floats
-        _float_outputs[k] = new QGeneralOutputFloat();
-        _output_layout->addWidget(_float_outputs[k]);
-    }
+  for(k = 0; k < 4; k++) {
+    // row 1
+    _float_inputs[k] = new QGeneralInputFloat();
+    _input_layout->addWidget(_float_inputs[k], 0, k);
+    // row 2
+    _float_inputs[k+4] = new QGeneralInputFloat();
+    _input_layout->addWidget(_float_inputs[k+4], 1, k);
+    // row 3
+    _float_inputs[k+8] = new QGeneralInputFloat();
+    _input_layout->addWidget(_float_inputs[k+8], 2, k);
+  }
 
-    for(k = 0;k < QGPIOWIDGET_INT_COUNT;k++){
-        // Outputs ints
-        _int_outputs[k] = new QGeneralOutputInt();
-        _output_layout->addWidget(_int_outputs[k]);
-    }
+  for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
+    _float_inputs[k]->setChecked(false);
+    QObject::connect(_float_inputs[k]->getCheckBox(), SIGNAL(stateChanged(int)), this, SLOT(checkCheckboxs()));
+  }
 
-    for(k = 0;k < 4;k++){
-        // Layout buttons
-        grid_layout_buttons->addWidget(buttons.button(2*k),k,0);
-        grid_layout_buttons->addWidget(buttons.button(2*k+1),k,1);
+  for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
+    QPen pen = QPen(QColor::fromHsv(25*k, 255, 255));
+    ui->plot->plottable(k)->setPen(pen);
+  }
 
-        // Channels row 1 (floats)
-        _float_inputs[k] = new QGeneralInputFloat();
-        _input_layout->addWidget(_float_inputs[k],0,k);
+  setLabels();
+  //loadSettings();
 
-        // Channels row 2 (floats)
-        _float_inputs[k+4] = new QGeneralInputFloat();
-        _input_layout->addWidget(_float_inputs[k+4],1,k);
+  checkCheckboxs();
+  set_button = new QPushButton("Set");
+  _output_layout->addWidget(set_button, QGPIOWIDGET_IOCOUNT);
+  QObject::connect(set_button, SIGNAL(released()), this, SLOT(sendGPIO()));
 
-        // Channels row 3 (ints)
-        _int_inputs[k] = new QGeneralInputInt();
-        _input_layout->addWidget(_int_inputs[k],2,k);
-    }
+  ui->channels_frame->setLayout(_input_layout);
+  ui->frame_send->setLayout(_output_layout);
+  ui->frame_buttons->setLayout(grid_layout_buttons);
 
-    for(k = 0;k < QGPIOWIDGET_FLOAT_COUNT;k++){
-        _float_inputs[k]->setChecked(false);
-        QObject::connect(_float_inputs[k]->getCheckBox(),SIGNAL(stateChanged(int)),this,SLOT(checkCheckboxs()));
-    }
+  //start timer
+  _plot_timer = startTimer(20, Qt::PreciseTimer);
+  _gpio_timer = startTimer(10, Qt::PreciseTimer);
 
-    for(k = 0;k < QGPIOWIDGET_INT_COUNT;k++){
-        _int_inputs[k]->setChecked(false);
-        QObject::connect(_int_inputs[k]->getCheckBox(),SIGNAL(stateChanged(int)),this,SLOT(checkCheckboxs()));
-    }
-
-    for(k = 0;k < 12;k++){
-        QPen pen = QPen(QColor::fromHsv(15+30*k,255,255));
-        ui->plot->plottable(k)->setPen(pen);
-    }
-
-    setLabels();
-    //loadSettings();
-
-    checkCheckboxs();
-    set_button = new QPushButton("Set");
-    _output_layout->addWidget(set_button,QGPIOWIDGET_IOCOUNT);
-    QObject::connect(set_button,SIGNAL(released()),this,SLOT(sendGPIO()));
-
-    ui->channels_frame->setLayout(_input_layout);
-    ui->frame_send->setLayout(_output_layout);
-    ui->frame_buttons->setLayout(grid_layout_buttons);
-
-    //start timer
-    _plot_timer = startTimer(20,Qt::PreciseTimer);
-    _gpio_timer = startTimer(10,Qt::PreciseTimer);
-
-    setAttribute(Qt::WA_DeleteOnClose);
-    show();
+  setAttribute(Qt::WA_DeleteOnClose);
+  show();
 }
 
 QGPIOWidget::~QGPIOWidget()
@@ -126,22 +109,6 @@ void QGPIOWidget::restoreState(QString group)
     }
     settings.endArray();
 
-    settings.beginReadArray("IntChannels");
-    for(int k = 0;k < QGPIOWIDGET_INT_COUNT;k++){
-        settings.setArrayIndex(k);
-        if(settings.contains("input")){
-            if(!settings.value("input").toString().isEmpty())
-                _int_inputs[k]->setText(settings.value("input").toString());
-        }
-        if(settings.contains("output")){
-            if(!settings.value("output").toString().isEmpty())
-                _int_outputs[k]->setText(settings.value("output").toString());
-        }
-        _int_inputs[k]->setChecked(settings.value("checked").toBool());
-        _int_outputs[k]->setValue(settings.value("value").toInt());
-    }
-    settings.endArray();
-
     settings.endGroup();
     settings.endGroup();
 }
@@ -162,7 +129,7 @@ void QGPIOWidget::saveState(QString group)
 
     // save channel states
     settings.beginWriteArray("FloatChannels");
-    for(int k = 0;k < QGPIOWIDGET_FLOAT_COUNT;k++){
+    for(int k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++){
         settings.setArrayIndex(k);
         settings.setValue("input",_float_inputs[k]->text());
         settings.setValue("checked",_float_inputs[k]->isChecked());
@@ -171,15 +138,6 @@ void QGPIOWidget::saveState(QString group)
     }
     settings.endArray();
 
-    settings.beginWriteArray("IntChannels");
-    for(int k = 0;k < QGPIOWIDGET_INT_COUNT;k++){
-        settings.setArrayIndex(k);
-        settings.setValue("input",_int_inputs[k]->text());
-        settings.setValue("checked",_int_inputs[k]->isChecked());
-        settings.setValue("output",_int_outputs[k]->text());
-        settings.setValue("value",_int_outputs[k]->value());
-    }
-    settings.endArray();
     settings.endGroup();
     settings.endGroup();
 }
@@ -187,15 +145,10 @@ void QGPIOWidget::saveState(QString group)
 void QGPIOWidget::setLabels()
 {
     int k;
-    for(k = 0;k < QGPIOWIDGET_FLOAT_COUNT;k++){
+    for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
         _float_outputs[k]->setText("FloatOut" + QString::number(k));
         _float_inputs[k]->setText("FloatIn" + QString::number(k));
         QObject::connect(_float_outputs[k]->getLabel(),SIGNAL(textChanged(QString)),this,SLOT(inputLabelsSend()));
-    }
-    for(k = 0;k < QGPIOWIDGET_INT_COUNT;k++){
-        _int_outputs[k]->setText("IntOut" + QString::number(k));
-        _int_inputs[k]->setText("IntIn" + QString::number(k));
-        QObject::connect(_int_outputs[k]->getLabel(),SIGNAL(textChanged(QString)),this,SLOT(inputLabelsSend()));
     }
 }
 
@@ -204,11 +157,8 @@ QStringList QGPIOWidget::getLabels()
     QStringList labels;
     labels.reserve(QGPIOWIDGET_IOCOUNT);
 
-    for(int k = 0;k < QGPIOWIDGET_FLOAT_COUNT;k++){
+    for(int k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
         labels.append(_float_inputs[k]->text());
-    }
-    for(int k = 0;k < QGPIOWIDGET_INT_COUNT;k++){
-        labels.append(_int_inputs[k]->text());
     }
 
     return labels;
@@ -232,11 +182,8 @@ void QGPIOWidget::timerEvent(QTimerEvent *event)
         int k;
         _time += 0.05;
 
-        for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT ; k++){
+        for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
             ui->plot->addDataPoint(_time, _float_inputs[k]->valueDouble(), k);
-        }
-        for(k = 0; k < QGPIOWIDGET_INT_COUNT ; k++){
-            ui->plot->addDataPoint(_time, _int_inputs[k]->valueDouble(), k+QGPIOWIDGET_FLOAT_COUNT);
         }
 
         if(running()){
@@ -254,22 +201,17 @@ void QGPIOWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void QGPIOWidget::setInput(gpio_t gpio)
+void QGPIOWidget::setInput(gpiox_t gpiox)
 {
     int k;
-    for(k=0;k<QGPIOWIDGET_FLOAT_COUNT;k++)
-        _float_inputs[k]->setValue(gpio.gpio_float[k]);
-    for(k=0;k<QGPIOWIDGET_INT_COUNT;k++)
-        _int_inputs[k]->setValue(gpio.gpio_int[k]);
+    for(k=0; k<QGPIOWIDGET_FLOAT_COUNT; k++)
+        _float_inputs[k]->setValue(gpiox.gpio_float[k]);
 }
 
 void QGPIOWidget::checkCheckboxs()
 {
     for(int k = 0;k < QGPIOWIDGET_FLOAT_COUNT; k++){
         ui->plot->plottable(k)->setVisible(_float_inputs[k]->isChecked());
-    }
-    for(int k = 0;k < QGPIOWIDGET_INT_COUNT; k++){
-        ui->plot->plottable(k+QGPIOWIDGET_FLOAT_COUNT)->setVisible(_int_inputs[k]->isChecked());
     }
 }
 
@@ -281,16 +223,14 @@ void QGPIOWidget::inputLabelsSend()
 void QGPIOWidget::sendGPIO()
 {
     int k;
-    gpio_t gpio;
+    gpiox_t gpiox;
 
-    gpio.time = 0;
-    for(k=0;k<QGPIOWIDGET_FLOAT_COUNT;k++)
-        gpio.gpio_float[k] = _float_outputs[k]->value();
+    gpiox.time = 0;
+    for(k=0; k<QGPIOWIDGET_FLOAT_COUNT; k++)
+        gpiox.gpio_float[k] = _float_outputs[k]->value();
 
-    for(k=0;k<QGPIOWIDGET_INT_COUNT;k++)
-        gpio.gpio_int[k] = _int_outputs[k]->value();
 
-    emit setOutput(gpio);
+    emit setOutput(gpiox);
 }
 
 void QGPIOWidget::sendButtonEvent(int id)

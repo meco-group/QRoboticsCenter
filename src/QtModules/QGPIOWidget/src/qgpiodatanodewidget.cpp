@@ -1,36 +1,36 @@
 #include "qgpiodatanodewidget.h"
 
 QGPIODataNodeWidget::QGPIODataNodeWidget(QWidget *parent) :
-    QDataNodeWidget(parent), _gpio(new QGPIOWidget(parent))
+    QDataNodeWidget(parent), _gpiox(new QGPIOWidget(parent))
 {
-    QObject::connect(_gpio, &QGPIOWidget::setOutput, this, &QGPIODataNodeWidget::onOutputSet);
-    QObject::connect(_gpio, &QGPIOWidget::eventButtonPressed, this, &QGPIODataNodeWidget::onEventButtonPressed);
-    QObject::connect(this, SIGNAL(transmit(gpio_t)), _gpio, SLOT(setInput(gpio_t)));
+    QObject::connect(_gpiox, &QGPIOWidget::setOutput, this, &QGPIODataNodeWidget::onOutputSet);
+    QObject::connect(_gpiox, &QGPIOWidget::eventButtonPressed, this, &QGPIODataNodeWidget::onEventButtonPressed);
+    QObject::connect(this, SIGNAL(transmit(gpiox_t)), _gpiox, SLOT(setInput(gpiox_t)));
 }
 
 QWidget *QGPIODataNodeWidget::w()
 {
-    return _gpio;
+    return _gpiox;
 }
 
 QGPIOWidget *QGPIODataNodeWidget::gpiow()
 {
-    return _gpio;
+    return _gpiox;
 }
 
 void QGPIODataNodeWidget::saveState(QString group)
 {
-    _gpio->saveState(group);
+    _gpiox->saveState(group);
 }
 
 void QGPIODataNodeWidget::restoreState(QString group)
 {
-    _gpio->restoreState(group);
+    _gpiox->restoreState(group);
 }
 
-void QGPIODataNodeWidget::receive(gpio_t gpio)
+void QGPIODataNodeWidget::receive(gpiox_t gpiox)
 {
-    _gpio->setInput(gpio);
+    _gpiox->setInput(gpiox);
 }
 
 void QGPIODataNodeWidget::onEventButtonPressed(int b)
@@ -40,7 +40,7 @@ void QGPIODataNodeWidget::onEventButtonPressed(int b)
     transmit(event);
 }
 
-void QGPIODataNodeWidget::onOutputSet(gpio_t gpio)
+void QGPIODataNodeWidget::onOutputSet(gpiox_t gpiox)
 {
-    transmit(gpio);
+    transmit(gpiox);
 }

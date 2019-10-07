@@ -605,13 +605,13 @@ static void mavlink_test_gpiox(uint8_t system_id, uint8_t component_id, mavlink_
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_gpiox_t packet_in = {
-        963497464,{ 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0, 52.0, 53.0, 54.0, 55.0, 56.0, 57.0, 58.0, 59.0, 60.0 }
+        963497464,{ 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0, 52.0, 53.0, 54.0, 55.0, 56.0 }
     };
     mavlink_gpiox_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
         packet1.time = packet_in.time;
         
-        mav_array_memcpy(packet1.gpio_float, packet_in.gpio_float, sizeof(float)*16);
+        mav_array_memcpy(packet1.gpio_float, packet_in.gpio_float, sizeof(float)*12);
         
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
         if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {

@@ -50,6 +50,7 @@ void QSerialProtocol::decode()
             switch(_msg.msgid) {
                 case MAVLINK_MSG_ID_HEARTBEAT: { MAVLINK_DECODE(heartbeat) }
                 case MAVLINK_MSG_ID_GPIO: { MAVLINK_DECODE(gpio) }
+                case MAVLINK_MSG_ID_GPIOX: { MAVLINK_DECODE(gpiox) }
                 case MAVLINK_MSG_ID_PRINT: { MAVLINK_DECODE(print) }
                 case MAVLINK_MSG_ID_THREAD_INFO: { MAVLINK_DECODE(thread_info) }
                 case MAVLINK_MSG_ID_EVENT: { MAVLINK_DECODE(event) }
@@ -107,6 +108,7 @@ void QSerialProtocol::on_info_triggered()
 
 MAVLINK_RECEIVE(heartbeat)
 MAVLINK_RECEIVE(gpio)
+MAVLINK_RECEIVE(gpiox)
 MAVLINK_RECEIVE(print)
 MAVLINK_RECEIVE(thread_info)
 MAVLINK_RECEIVE(event)
@@ -150,4 +152,3 @@ QAction *QSerialProtocol::getActivateAction()
 {
     return _activate;
 }
-

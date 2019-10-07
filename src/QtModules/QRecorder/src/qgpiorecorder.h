@@ -8,15 +8,15 @@ class QGPIORecorder : public QAbstractRecorder
 {
     Q_OBJECT
 public:
-    QGPIORecorder(QGPIOWidget *gpio, QObject* parent = 0);
+    QGPIORecorder(QGPIOWidget *gpiox, QObject* parent = 0);
 
 private:
-    QGPIOWidget* _gpio;
+    QGPIOWidget* _gpiox;
 
     virtual QString insertHeader();
 
 public slots:
-    virtual void receive(gpio_t gpio);
+    virtual void receive(gpiox_t gpiox);
 
 };
 

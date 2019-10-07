@@ -1,26 +1,17 @@
 #include "qgpiogamepadcommand.h"
 
-QGpioGamepadCommand::QGpioGamepadCommand(QWidget *parent) :
-    QGamepadCommandDataNodeWidget("Gpio",parent)
-{
-    for(int k=0; k<8; k++) {
-        _fchan[k] = add("float" + QString::number(k));
-    }
-    for(int k=0; k<4; k++) {
-        _ichan[k] = add("int" + QString::number(k));
-    }
+QGpioGamepadCommand::QGpioGamepadCommand(QWidget *parent) : QGamepadCommandDataNodeWidget("gpiox", parent) {
+  for(int k=0; k<QGPIOWIDGET_FLOAT_COUNT; k++) {
+    _fchan[k] = add("float" + QString::number(k));
+  }
 }
 
-void QGpioGamepadCommand::transmit_packet()
-{
-    gpio_t gpio;
-    gpio.time = 0;
-    for(int k=0; k<8; k++) {
-        gpio.gpio_float[k] = _fchan[k]->value();
-    }
-    for(int k=0; k<4; k++) {
-        gpio.gpio_int[k] = _ichan[k]->value();
-    }
+void QGpioGamepadCommand::transmit_packet() {
+  gpiox_t gpiox;
+  gpiox.time = 0;
+  for(int k=0; k<QGPIOWIDGET_FLOAT_COUNT; k++) {
+    gpiox.gpio_float[k] = _fchan[k]->value();
+  }
 
-    transmit(gpio);
+  transmit(gpiox);
 }

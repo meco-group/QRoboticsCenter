@@ -46,41 +46,33 @@ void QGPIOInputDialog::readHeader()
     ui->header_label->setText(header);
 }
 
-void QGPIOInputDialog::readCsvLine()
-{
-    // read line and pack in struct
-    if(~_stream->atEnd()){
-        QStringList columns = _stream->readLine().split('\t',QString::SkipEmptyParts);
-        mavlink_gpio_t gpio;
-        if(columns.length()>0){
-            gpio.time = columns[0].toUInt();
-        }
-        if(columns.length()>1){
-            int k = 1;
-            while((k<9) && (k<columns.length())){
-                gpio.gpio_float[k-1] = columns[k].toFloat();
-                k++;
-            }
-        }
-        if(columns.length()>9){
-            int k = 9;
-            while((k<13) && (k<columns.length())){
-                gpio.gpio_int[k-9] = columns[k].toInt();
-                k++;
-            }
-        }
-
-        emit setGpioOutput(gpio);
-
-        ui->progressBar->setValue(_stream->pos());
+void QGPIOInputDialog::readCsvLine() {
+  // read line and pack in struct
+  if(~_stream->atEnd()) {
+    QStringList columns = _stream->readLine().split('\t',QString::SkipEmptyParts);
+    gpiox_t gpiox;
+    if(columns.length() > 0) {
+      gpiox.time = columns[0].toUInt();
+    }
+    if(columns.length() > 1) {
+      int k = 1;
+      while((k < QGPIOWIDGET_FLOAT_COUNT+1) && (k < columns.length())) {
+        gpiox.gpio_float[k-1] = columns[k].toFloat();
+        k++;
+      }
     }
 
-    // check end of file
-    if(_stream->atEnd()){
-        if(~_repeat){
-            stop();
-        }
+    emit setGpioOutput(gpiox);
+
+    ui->progressBar->setValue(_stream->pos());
+  }
+
+  // check end of file
+  if(_stream->atEnd()){
+    if(~_repeat){
+      stop();
     }
+  }
 }
 
 void QGPIOInputDialog::resetCsv()
@@ -166,5 +158,3 @@ void QGPIOInputDialog::stop()
     ui->start->setChecked(false);
     resetCsv();
 }
-
-

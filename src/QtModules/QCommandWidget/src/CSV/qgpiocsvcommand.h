@@ -1,6 +1,7 @@
 #ifndef QGPIOCSVCOMMAND_H
 #define QGPIOCSVCOMMAND_H
 
+#include <qgpiowidget.h>
 #include <qcsvcommanddatanodewidget.h>
 
 class QGpioCsvCommand : public QCsvReaderDataNodeWidget

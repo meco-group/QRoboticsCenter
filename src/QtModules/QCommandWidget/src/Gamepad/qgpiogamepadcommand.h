@@ -1,6 +1,7 @@
 #ifndef QGPIOGAMEPADCOMMAND_H
 #define QGPIOGAMEPADCOMMAND_H
 
+#include <qgpiowidget.h>
 #include <qgamepadcommanddatanodewidget.h>
 
 class QGpioGamepadCommand : public QGamepadCommandDataNodeWidget
@@ -12,8 +13,7 @@ public:
     virtual void transmit_packet();
 
 private:
-    QGamepadEntry* _fchan[8];
-    QGamepadEntry* _ichan[4];
+    QGamepadEntry* _fchan[QGPIOWIDGET_FLOAT_COUNT];
 
 };
 
