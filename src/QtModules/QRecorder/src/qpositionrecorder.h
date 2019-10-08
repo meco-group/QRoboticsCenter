@@ -1,9 +1,9 @@
 #ifndef QPOSITIONRECORDER_H
 #define QPOSITIONRECORDER_H
 
-#include <qabstractrecorder.h>
+#include <qxmlrecorder.h>
 
-class QPositionRecorder : public QAbstractRecorder
+class QPositionRecorder : public QXMLRecorder
 {
     Q_OBJECT
 public:

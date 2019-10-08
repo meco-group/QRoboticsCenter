@@ -88,7 +88,7 @@ void QCsvReaderWidget::on_pushButton_clicked()
     QString path = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     info.path(),
                                                     tr("CSV files (*.csv *.txt)"));
-    if(~path.isEmpty()){
+    if(!path.isEmpty()){
         if(_csv_reader->setFile(path)){
             updateFileName();
         }

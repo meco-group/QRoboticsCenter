@@ -1,7 +1,7 @@
 #include "qvelocityrecorder.h"
 
 QVelocityRecorder::QVelocityRecorder(QObject *parent) :
-    QAbstractRecorder("Velocity", LOG_VELOCITY, parent)
+    QXMLRecorder("Velocity", LOG_VELOCITY, parent)
 {
     //do nothing
 }

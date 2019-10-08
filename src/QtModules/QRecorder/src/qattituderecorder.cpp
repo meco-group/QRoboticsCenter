@@ -1,7 +1,7 @@
 #include "qattituderecorder.h"
 
 QAttitudeRecorder::QAttitudeRecorder(QObject *parent) :
-    QAbstractRecorder("Attitude", LOG_ATTITUDE, parent)
+    QXMLRecorder("Attitude", LOG_ATTITUDE, parent)
 {
     //do nothing
 }

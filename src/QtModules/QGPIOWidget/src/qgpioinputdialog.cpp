@@ -48,7 +48,7 @@ void QGPIOInputDialog::readHeader()
 
 void QGPIOInputDialog::readCsvLine() {
   // read line and pack in struct
-  if(~_stream->atEnd()) {
+  if(!_stream->atEnd()) {
     QStringList columns = _stream->readLine().split('\t',QString::SkipEmptyParts);
     gpiox_t gpiox;
     if(columns.length() > 0) {
@@ -69,7 +69,7 @@ void QGPIOInputDialog::readCsvLine() {
 
   // check end of file
   if(_stream->atEnd()){
-    if(~_repeat){
+    if(!_repeat){
       stop();
     }
   }
@@ -131,9 +131,9 @@ void QGPIOInputDialog::openFile()
 {
     QFileInfo info(*_file);
     QString path = QFileDialog::getOpenFileName(this, tr("Open File"),
-                                                    info.path(),
-                                                    tr("CSV files (*.csv *.txt)"));
-    if(~path.isEmpty()){
+                                                info.path(),
+                                                tr("CSV files (*.csv *.txt)"));
+    if(!path.isEmpty()){
         setFile(path);
     }
 }

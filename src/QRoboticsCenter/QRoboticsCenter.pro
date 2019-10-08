@@ -1,13 +1,18 @@
-QT += core gui gamepad
+# QRoboticsCenter version
+VERSION = 6.0
 
+# QT
+QT += core gui gamepad
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = QRoboticsCenter
 TEMPLATE = app
 
-INCLUDEPATH += $$PWD
-DEFINES += QT_NO_PRINTER
+DEFINES += QT_NO_PRINTER \
+           VERSION=\"\\\"$${VERSION}\\\"\"
 PROTOCOL = mavlink
+
+INCLUDEPATH += $$PWD
 
 HEADERS += \
   qaboutdialog.h \

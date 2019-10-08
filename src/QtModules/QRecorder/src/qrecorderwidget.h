@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QDebug>
-#include <qabstractrecorder.h>
+#include <qxmlrecorder.h>
 
 class QRecorderWidget : public QLabel
 {

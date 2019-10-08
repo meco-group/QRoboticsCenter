@@ -1,9 +1,9 @@
 #ifndef QVELOCITYRECORDER_H
 #define QVELOCITYRECORDER_H
 
-#include <qabstractrecorder.h>
+#include <qxmlrecorder.h>
 
-class QVelocityRecorder : public QAbstractRecorder
+class QVelocityRecorder : public QXMLRecorder
 {
     Q_OBJECT
 public:

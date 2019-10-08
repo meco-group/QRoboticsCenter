@@ -3,36 +3,33 @@
 
 #include <QObject>
 #include <QAction>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QDateTime>
 #include <qdatanode.h>
 
-class QAbstractRecorder : public QDataNode
-{
-    Q_OBJECT
+class QAbstractRecorder : public QDataNode {
+  Q_OBJECT
 public:
-    explicit QAbstractRecorder(const QString& type, const int id = -1, QObject *parent = 0);
+  explicit QAbstractRecorder(const QString& type, const int id = -1, QObject *parent = 0);
 
-    bool isRecording();
-    QAction *record();
-    void start();
-    void stop();
+  bool isRecording();
+  QAction *record();
+  virtual void start() = 0;
+  virtual void stop() = 0;
 
 protected:
-    QFile *_log;
+  QFile *_log;
+  const QString _type;
+  const int _id;
+  QAction *_record;
 
-private:
-    const QString _type;
-    const int _id;
-    QAction *_record;
-
-    void createHeader();
-    void createFooter();
-    virtual QString insertHeader();
+  virtual void createHeader() = 0;
+  virtual void createFooter() = 0;
+  virtual QString insertHeader() = 0;
 
 public slots:
-    void activate(bool);
+  void activate(bool);
 
 };
 

@@ -1,9 +1,9 @@
 #ifndef QATTITUDERECORDER_H
 #define QATTITUDERECORDER_H
 
-#include <qabstractrecorder.h>
+#include <qxmlrecorder.h>
 
-class QAttitudeRecorder : public QAbstractRecorder
+class QAttitudeRecorder : public QXMLRecorder
 {
     Q_OBJECT
 public:
