@@ -1,3 +1,13 @@
 theme: jekyll-theme-minimal
 plugins:
   - "jekyll-github-metadata"
+  - "jekyll-menus"
+
+menu:
+  entries:
+    - title: Home
+      url: /
+    - title: CI/CD
+      url: /ci-cd
+    - title: About
+      url: /about
