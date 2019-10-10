@@ -65,7 +65,7 @@ QGPIOWidget::QGPIOWidget(QWidget *parent) :
   ui->frame_buttons->setLayout(grid_layout_buttons);
 
   //start timer
-  _plot_timer = startTimer(20, Qt::PreciseTimer);
+  _plot_timer = startTimer(50, Qt::PreciseTimer);
   _gpio_timer = startTimer(10, Qt::PreciseTimer);
 
   setAttribute(Qt::WA_DeleteOnClose);
