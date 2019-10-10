@@ -5,7 +5,7 @@ QAboutDialog::QAboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::QAbout
   // Setup dialog
   ui->setupUi(this);
   setWindowTitle("About");
-  setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+  setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
   setModal(true); //make it a blocking widget
   setAttribute(Qt::WA_DeleteOnClose);
 
@@ -13,6 +13,8 @@ QAboutDialog::QAboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::QAbout
   setApplicationTitle(QApplication::applicationName());
   setVersion(QApplication::applicationVersion());
   setIcon(QApplication::windowIcon());
+  setCopyright("Copyright (C) 2019 MECO Research Team, KU Leuven");
+  setLink("<a href=\"https://github.com/meco-group/QRoboticsCenter/\">GitHub repository</a>");
 }
 
 QAboutDialog::~QAboutDialog() {
@@ -33,6 +35,9 @@ void QAboutDialog::setCopyright(QString copyright) {
 
 void QAboutDialog::setLink(QString link) {
   ui->link_label->setText(link);
+  ui->link_label->setTextFormat(Qt::RichText);
+  ui->link_label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+  ui->link_label->setOpenExternalLinks(true);
 }
 
 void QAboutDialog::setIcon(QString image_path) {
@@ -45,7 +50,7 @@ void QAboutDialog::setIcon(QIcon icon) {
   ui->icon_label->setPixmap(pixmap.scaled(ui->icon_label->rect().size(),Qt::KeepAspectRatio));
 }
 
-QShowAboutDialogAction::QShowAboutDialogAction(QObject *parent) : QAction("about",parent) {
+QShowAboutDialogAction::QShowAboutDialogAction(QObject *parent) : QAction("About",parent) {
   QObject::connect(this, &QShowAboutDialogAction::triggered, this, &QShowAboutDialogAction::showDialog);
 }
 

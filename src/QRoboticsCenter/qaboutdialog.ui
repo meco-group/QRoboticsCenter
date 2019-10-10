@@ -18,8 +18,8 @@
         <widget class="QLabel" name="icon_label">
           <property name="minimumSize">
             <size>
-            <width>150</width>
-            <height>150</height>
+              <width>150</width>
+              <height>150</height>
             </size>
           </property>
           <property name="text">

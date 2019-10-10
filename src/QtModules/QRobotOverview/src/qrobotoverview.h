@@ -7,6 +7,7 @@
 #include <qserialprotocol.h>
 #include <qabstractrobot_helper.h>
 #include <qrobotbutton.h>
+#include <waitingspinnerwidget.h>
 
 class QRobotOverview : public QWidget
 {
@@ -22,6 +23,7 @@ protected:
 
 private:
     QList<QAbstractRobot*> _robots;
+    WaitingSpinnerWidget* _spinner;
 
 public slots:
     QAbstractRobot *addRobot(QAbstractRobot* robot);

@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
   a.setOrganizationName("RobSoft");
   a.setApplicationVersion(VERSION);
   a.setApplicationDisplayName("QRoboticsCenter");
-  a.setWindowIcon(QIcon(":/icons/QRoboticsCenterLogo_blue.png"));
+  a.setWindowIcon(QIcon(":/icons/QRoboticsCenter_logo.png"));
 
   QRoboticsCenterMainwindow mainwindow;
   mainwindow.show();

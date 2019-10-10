@@ -2,7 +2,7 @@
     included_modules += $$PWD
     message( "Including $$PWD" )
 
-    QT += 
+    QT +=
 
     INCLUDEPATH += $$PWD \
                    $$PWD/QRobots \
@@ -48,6 +48,7 @@
     FORMS += \
         $$PWD/QRobotWidgets/qbalancingwidget.ui
 
+include(../../QWaitingSpinner/src/qtwaitingspinner.pri)
 include(../../QSerialProtocol/src/qserialprotocol.pri)
 include(../../QGPIOWidget/src/qgpiowidget.pri)
 include(../../QRecorder/src/qrecorder.pri)

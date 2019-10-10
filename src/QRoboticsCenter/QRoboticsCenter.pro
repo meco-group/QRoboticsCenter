@@ -1,5 +1,5 @@
 # QRoboticsCenter version
-VERSION = 6.0
+VERSION = "6.0-develop"
 
 # QT
 QT += core gui gamepad
@@ -10,6 +10,7 @@ TEMPLATE = app
 
 DEFINES += QT_NO_PRINTER \
            VERSION=\"\\\"$${VERSION}\\\"\"
+
 PROTOCOL = mavlink
 
 INCLUDEPATH += $$PWD

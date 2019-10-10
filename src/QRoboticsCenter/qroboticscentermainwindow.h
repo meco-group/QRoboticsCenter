@@ -23,9 +23,9 @@ class QRoboticsCenterMainwindow : public QMainWindow {
     QSerialScanner *_scanner = new QSerialScanner(this);
     QRobotOverview *_overview = new QRobotOverview(this);
 
-    QAction* _scan = new QAction("scan", this);
-    QAction* _scan_usb = new QAction("usb", this);
-    QAction* _scan_bluetooth = new QAction("bluetooth", this);
+    QAction* _scan = new QAction("Scan", this);
+    QAction* _scan_usb = new QAction("USB", this);
+    QAction* _scan_bluetooth = new QAction("Bluetooth", this);
     QShowAboutDialogAction* _about = new QShowAboutDialogAction(0);
 
     void setup();

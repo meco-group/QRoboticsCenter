@@ -35,7 +35,7 @@
          <string>idle</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../QRoboticsCenter/QRoboticsCenter/icons.qrc">
+         <iconset resource="../../../../QRoboticsCenter/icons.qrc">
           <normaloff>:/icons/balancing_control_idle.png</normaloff>:/icons/balancing_control_idle.png</iconset>
         </property>
        </widget>
@@ -52,7 +52,7 @@
          <string>attitude</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../QRoboticsCenter/QRoboticsCenter/icons.qrc">
+         <iconset resource="../../../../QRoboticsCenter/icons.qrc">
           <normaloff>:/icons/balancing_control_attitude.png</normaloff>:/icons/balancing_control_attitude.png</iconset>
         </property>
        </widget>
@@ -69,7 +69,7 @@
          <string>velocity</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../QRoboticsCenter/QRoboticsCenter/icons.qrc">
+         <iconset resource="../../../../QRoboticsCenter/icons.qrc">
           <normaloff>:/icons/balancing_control_velocity.png</normaloff>:/icons/balancing_control_velocity.png</iconset>
         </property>
        </widget>
@@ -86,7 +86,7 @@
          <string>position</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../QRoboticsCenter/QRoboticsCenter/icons.qrc">
+         <iconset resource="../../../../QRoboticsCenter/icons.qrc">
           <normaloff>:/icons/balancing_control_position.png</normaloff>:/icons/balancing_control_position.png</iconset>
         </property>
        </widget>
@@ -152,7 +152,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../../QRoboticsCenter/QRoboticsCenter/icons.qrc"/>
+  <include location="../../../../QRoboticsCenter/icons.qrc"/>
  </resources>
  <connections/>
 </ui>

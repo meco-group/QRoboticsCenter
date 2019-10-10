@@ -24,7 +24,7 @@ void QRoboticsCenterMainwindow::setup() {
   setCentralWidget(_overview);
 
   // Scanning menu
-  QMenu *scan = menuBar()->addMenu("Scan");
+  QMenu *scan = menuBar()->addMenu("Connection");
   _scan->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
   scan->addAction(_scan);
   scan->addSeparator();
