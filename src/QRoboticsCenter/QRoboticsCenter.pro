@@ -1,5 +1,10 @@
 # QRoboticsCenter version
-VERSION = "6.0-develop"
+VERSION = "6.0"
+
+CONFIG += debug_and_release
+debug {
+  DEFINES += DEVELOP
+}
 
 # QT
 QT += core gui gamepad
