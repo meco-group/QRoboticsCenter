@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QDebug>
 #include <qdatanode.h>
+#include <QDebug>
 
 class QSerialProtocol : public QDataNode {
     Q_OBJECT

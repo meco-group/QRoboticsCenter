@@ -8,22 +8,19 @@ QSerialScanner::QSerialScanner(QObject *parent) :
     this->setupBT();
 }
 
-void QSerialScanner::query()
-{
+void QSerialScanner::query() {
     this->scanUSB();
     this->scanBT();
 }
 
-void QSerialScanner::setupUSB()
-{
+void QSerialScanner::setupUSB() {
     qDebug() << "Setting up USB discovery ...";
     _discovery_agent_USB = new QUSBDeviceDiscoveryAgent();
     connect(_discovery_agent_USB, SIGNAL(deviceDiscovered(QSerialPortInfo)),
             this, SLOT(connectionUSB(QSerialPortInfo)));
 }
 
-void QSerialScanner::setupBT()
-{
+void QSerialScanner::setupBT() {
     qDebug() << "Setting up Bluetooth discovery ...";
     _discovery_agent_BT = new QBluetoothDeviceDiscoveryAgent();
 
@@ -36,35 +33,30 @@ void QSerialScanner::setupBT()
             this, SLOT(connectionBT(QBluetoothDeviceInfo)));
 }
 
-void QSerialScanner::scanUSB()
-{
+void QSerialScanner::scanUSB() {
     _discovery_agent_USB->start();
 }
 
-void QSerialScanner::scanBT()
-{
+void QSerialScanner::scanBT() {
     _discovery_agent_BT->start();
 }
 
-void QSerialScanner::scanUDP()
-{
+void QSerialScanner::scanUDP() {
     //_discovery_agent_TCP->start();
 }
 
-void QSerialScanner::checkConnection(QSerialProtocol *connection)
-{
+void QSerialScanner::checkConnection(QSerialProtocol *connection) {
     QHeartbeatDetector *monitor = new QHeartbeatDetector(connection);
     QObject::connect(monitor, &QHeartbeatDetector::alive, this, &QSerialScanner::connectionAlive);
     QObject::connect(monitor, &QHeartbeatDetector::dead, this, &QSerialScanner::connectionDead);
     monitor->start();
 }
 
-void QSerialScanner::connectionUSB(QSerialPortInfo info)
-{
+void QSerialScanner::connectionUSB(QSerialPortInfo info) {
     QSerialPort *io_device = new QSerialPort(info);
     io_device->setBaudRate(QSerialPort::Baud115200);
     if(!io_device->open(QIODevice::ReadWrite)){
-        qDebug() << "Error opening port " << io_device->portName();
+        qDebug() << "Error opening port" << io_device->portName();
     }
 
     QSerialProtocol *connection = new QSerialProtocol(io_device, this);
@@ -72,20 +64,18 @@ void QSerialScanner::connectionUSB(QSerialPortInfo info)
     checkConnection(connection);
 }
 
-void QSerialScanner::connectionBT(QBluetoothDeviceInfo info)
-{
+void QSerialScanner::connectionBT(QBluetoothDeviceInfo info) {
     QBluetoothSocket *io_device = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
     qDebug() << "Created Bluetooth socket.";
     io_device->connectToService(info.address(),QBluetoothUuid(QBluetoothUuid::SerialPort));
-    qDebug() << "ConnectToBluetoothService done.";
+    qDebug() << "Bluetooth connection established.";
 
     QSerialProtocol *connection = new QSerialProtocol(io_device,this);
     connection->setObjectName(info.name());
     checkConnection(connection);
 }
 
-void QSerialScanner::connectionUDP(QString server, int port)
-{
+void QSerialScanner::connectionUDP(QString server, int port) {
     /*QTcpSocket* socket = new QTcpSocket;
     socket->connectToHost(server, port);
 
@@ -98,16 +88,12 @@ void QSerialScanner::connectionUDP(QString server, int port)
     //checkConnection(connection);
 }
 
-void QSerialScanner::connectionAlive(QDataNode *datanode)
-{
+void QSerialScanner::connectionAlive(QDataNode *datanode) {
     emit connectionFound((QSerialProtocol*)datanode);
-    qDebug() << "Device name:" << datanode->objectName();
-    qDebug() << "MAVlink detected!";
+    qDebug() << "MAVlink detected on device" << datanode->objectName();
 }
 
-void QSerialScanner::connectionDead(QDataNode *datanode)
-{
+void QSerialScanner::connectionDead(QDataNode *datanode) {
     datanode->deleteLater();
-    qDebug() << "Device name:" << datanode->objectName();
-    qDebug() << "No MAVlink detected.";
+    qDebug() << "No MAVlink detected on device" << datanode->objectName();
 }

@@ -5,7 +5,6 @@
 #include <qtiltingtable.h>
 
 QAbstractRobot* construct_from_type(const int id, const int type, QObject* parent) {
-    qDebug() << type;
     switch(type) {
         case BALLBOT:
             return new QBallbot(id, parent);

@@ -18,7 +18,7 @@ void QUdpReader::setPort(quint16 port)
     _port = port;
     _socket->close();
     if(!(_socket->state() == QAbstractSocket::UnconnectedState || _socket->waitForDisconnected(1000))){
-        qDebug() << _socket->errorString();
+        qDebug() << "UDP error:" << _socket->errorString();
     }
     _socket->bind(_port);
 }

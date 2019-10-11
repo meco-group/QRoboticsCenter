@@ -9,7 +9,7 @@ QGPIOWidget::QGPIOWidget(QWidget *parent) :
     _paused(false)
 {
   ui->setupUi(this);
-  ui->plot->init(40, QGPIOWIDGET_IOCOUNT); //make graph with 12 functions
+  ui->plot->init(10, QGPIOWIDGET_IOCOUNT); //make graph with 12 functions
 
   _output_layout = new QBoxLayout(QBoxLayout::TopToBottom,0);
   _input_layout = new QGridLayout(0);
