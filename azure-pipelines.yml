@@ -29,7 +29,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      develop: eq(variables['Build.SourceBranchName'], 'develop')
+      develop: false
     steps:
     - script: |
         sudo add-apt-repository ppa:beineri/opt-qt-5.10.0-xenial
@@ -40,6 +40,8 @@ stages:
         curl -Lo linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
         chmod a+x linuxdeployqt
       displayName: 'setup'
+    - script: echo "##vso[task.setvariable variable=develop;]true"
+      condition: eq(variables['Build.SourceBranchName'], 'develop')
     - script: |
         source /opt/qt510/bin/qt510-env.sh
         rm -rf build/ && mkdir build && cd build
@@ -65,22 +67,33 @@ stages:
     pool:
       vmImage: 'vs2017-win2016'
     variables:
-      develop: eq(variables['Build.SourceBranchName'], 'develop')
+      develop: false
     steps:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
         python -m aqt install --outputdir C:\Users\VssAdministrator\ 5.13.1 windows desktop win64_msvc2017_64
       displayName: 'setup'
+    - script: echo "##vso[task.setvariable variable=develop;]true"
+      condition: eq(variables['Build.SourceBranchName'], 'develop')
     - script: |
-        dir "C:\Users\VssAdministrator\Qt5.13.1\5.13.1\"
         set PATH=C:\Users\VssAdministrator\Qt5.13.1\5.13.1\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
-        IF $(develop) (nmake debug) ELSE (nmake release)
+        nmake debug
       displayName: 'build'
+      condition: eq(variables.develop, true)
+    - script: |
+        set PATH=C:\Users\VssAdministrator\Qt5.13.1\5.13.1\msvc2017_64\bin;%PATH%
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
+        mkdir build & cd build
+        qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
+        set CL=/MP
+        nmake release
+      displayName: 'build'
+      condition: eq(variables.develop, false)
     - script: |
         set PATH=C:\Users\VssAdministrator\Qt5.13.1\5.13.1\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
@@ -99,7 +112,7 @@ stages:
     pool:
       vmImage: 'macOS-latest'
     variables:
-      develop: eq(variables['Build.SourceBranchName'], 'develop')
+      develop: false
     steps:
     - script: |
         brew update
@@ -107,6 +120,8 @@ stages:
         brew link --force qt5
         brew link --force zip
       displayName: 'setup'
+    - script: echo "##vso[task.setvariable variable=develop;]true"
+      condition: eq(variables['Build.SourceBranchName'], 'develop')
     - script: |
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro

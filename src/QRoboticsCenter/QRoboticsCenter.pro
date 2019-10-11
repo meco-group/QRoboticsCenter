@@ -9,7 +9,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = QRoboticsCenter
 TEMPLATE = app
-CONFIG += debug_and_release
+CONFIG += debug_and_release \
+          console
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_PATCH}
 build_pass: CONFIG(debug, debug|release) {
