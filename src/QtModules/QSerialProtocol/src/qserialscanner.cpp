@@ -16,7 +16,7 @@ void QSerialScanner::query()
 
 void QSerialScanner::setupUSB()
 {
-    qDebug() << "setting up USB";
+    qDebug() << "Setting up USB discovery ...";
     _discovery_agent_USB = new QUSBDeviceDiscoveryAgent();
     connect(_discovery_agent_USB, SIGNAL(deviceDiscovered(QSerialPortInfo)),
             this, SLOT(connectionUSB(QSerialPortInfo)));
@@ -24,7 +24,7 @@ void QSerialScanner::setupUSB()
 
 void QSerialScanner::setupBT()
 {
-    qDebug() << "setting up bluetooth";
+    qDebug() << "Setting up Bluetooth discovery ...";
     _discovery_agent_BT = new QBluetoothDeviceDiscoveryAgent();
 
     // Bluetooth adaptor configuration
@@ -64,7 +64,7 @@ void QSerialScanner::connectionUSB(QSerialPortInfo info)
     QSerialPort *io_device = new QSerialPort(info);
     io_device->setBaudRate(QSerialPort::Baud115200);
     if(!io_device->open(QIODevice::ReadWrite)){
-        qDebug() << "Error opening port" << io_device->portName();
+        qDebug() << "Error opening port " << io_device->portName();
     }
 
     QSerialProtocol *connection = new QSerialProtocol(io_device, this);
@@ -75,9 +75,9 @@ void QSerialScanner::connectionUSB(QSerialPortInfo info)
 void QSerialScanner::connectionBT(QBluetoothDeviceInfo info)
 {
     QBluetoothSocket *io_device = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
-    qDebug() << "Created bluetooth socket";
+    qDebug() << "Created Bluetooth socket.";
     io_device->connectToService(info.address(),QBluetoothUuid(QBluetoothUuid::SerialPort));
-    qDebug() << "ConnectToBluetoothService done";
+    qDebug() << "ConnectToBluetoothService done.";
 
     QSerialProtocol *connection = new QSerialProtocol(io_device,this);
     connection->setObjectName(info.name());
@@ -102,12 +102,12 @@ void QSerialScanner::connectionAlive(QDataNode *datanode)
 {
     emit connectionFound((QSerialProtocol*)datanode);
     qDebug() << "Device name:" << datanode->objectName();
-    qDebug() << "mavlink detected";
+    qDebug() << "MAVlink detected!";
 }
 
 void QSerialScanner::connectionDead(QDataNode *datanode)
 {
     datanode->deleteLater();
     qDebug() << "Device name:" << datanode->objectName();
-    qDebug() << "no mavlink detected";
+    qDebug() << "No MAVlink detected.";
 }

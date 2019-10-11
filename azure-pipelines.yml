@@ -29,7 +29,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      OS: linux
+      develop: eq(variables['Build.SourceBranchName'], 'develop')
     steps:
     - script: |
         sudo add-apt-repository ppa:beineri/opt-qt-5.10.0-xenial
@@ -44,7 +44,7 @@ stages:
         source /opt/qt510/bin/qt510-env.sh
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
-        make -j5 && make clean
+        if $(develop); then make debug -j5; else make release -j5; fi
       displayName: 'build'
     - script: |
         source /opt/qt510/bin/qt510-env.sh
@@ -65,7 +65,7 @@ stages:
     pool:
       vmImage: 'vs2017-win2016'
     variables:
-      OS: windows
+      develop: eq(variables['Build.SourceBranchName'], 'develop')
     steps:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
@@ -78,7 +78,8 @@ stages:
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
-        nmake
+        set CL=/MP
+        IF $(develop) (nmake debug) ELSE (nmake release)
       displayName: 'build'
     - script: |
         set PATH=C:\Users\VssAdministrator\Qt5.13.1\5.13.1\msvc2017_64\bin;%PATH%
@@ -98,7 +99,7 @@ stages:
     pool:
       vmImage: 'macOS-latest'
     variables:
-      OS: mac
+      develop: eq(variables['Build.SourceBranchName'], 'develop')
     steps:
     - script: |
         brew update
@@ -109,7 +110,7 @@ stages:
     - script: |
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
-        make -j5
+        if $(develop); then make debug -j5; else make release -j5; fi
       displayName: 'build'
     - script: |
         macdeployqt build/bin/QRoboticsCenter.app -dmg

@@ -4,19 +4,21 @@
 QRobotOverview::QRobotOverview(QWidget *parent) : QWidget(parent) {
   setLayout(new QVBoxLayout(this));
   setMinimumWidth(250);
+  // setMinimumHeight(100);
 
   // show a spinner while searching for a mavlink connection
-  _spinner = new WaitingSpinnerWidget(this);
-  // _spinner->setRoundness(70.0);
-  // _spinner->setMinimumTrailOpacity(15.0);
-  // _spinner->setTrailFadePercentage(70.0);
-  // _spinner->setNumberOfLines(12);
-  // _spinner->setLineLength(10);
-  // _spinner->setLineWidth(5);
-  // _spinner->setInnerRadius(10);
-  // _spinner->setRevolutionsPerSecond(1);
-  // spinner->setColor(QColor(81, 4, 71));
-  _spinner->start(); // gets the show on the road!
+  _spinner = new WaitingSpinnerWidget(this, false);
+  _spinner->setRoundness(100.0);
+  _spinner->start();
+  layout()->addWidget(_spinner);
+  layout()->setAlignment(_spinner, Qt::AlignHCenter);
+
+  // show text indicating the exploration of connections
+  QLabel *label = new QLabel(this);
+  label->setText("Checking for connection ...");
+  layout()->addWidget(label);
+  layout()->setAlignment(label, Qt::AlignHCenter);
+  QObject::connect(_spinner, &WaitingSpinnerWidget::stopped, label, &QLabel::hide);
 }
 
 int QRobotOverview::findRobot(int id) const {

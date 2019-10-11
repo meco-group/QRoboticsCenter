@@ -47,6 +47,10 @@ public:
                          bool centerOnParent = true,
                          bool disableParentWhenSpinning = true);
 
+signals:
+   void started();
+   void stopped();
+
 public slots:
     void start();
     void stop();
@@ -93,7 +97,6 @@ private:
     void updateTimer();
     void updatePosition();
 
-private:
     QColor  _color;
     qreal   _roundness; // 0..100
     qreal   _minimumTrailOpacity;
@@ -104,7 +107,6 @@ private:
     int     _lineWidth;
     int     _innerRadius;
 
-private:
     WaitingSpinnerWidget(const WaitingSpinnerWidget&);
     WaitingSpinnerWidget& operator=(const WaitingSpinnerWidget&);
 
