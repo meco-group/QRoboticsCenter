@@ -17,24 +17,26 @@ variables:
     value: true
   - name: MAC
     value: true
+  - name: QT_VERSION
+    value: '5.11.3'
 
 stages:
 - stage: build
   condition: eq(variables.BUILD, true)
   jobs:
 
-  # BUILD for LINUX
+  # BUILD for LINUXc
   - job: linux
     condition: eq(variables.LINUX, true)
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-18.04'
     variables:
       target: 'release' # default target
     steps:
     - script: |
-        sudo add-apt-repository ppa:beineri/opt-qt-5.10.0-xenial
+        sudo add-apt-repository ppa:beineri/opt-qt-5.11.3-bionic
         sudo apt-get update
-        sudo apt-get -y install qt510-meta-full
+        sudo apt-get -y install qt511-meta-full
         sudo apt-get -y install qt5-qmake
         sudo apt-get -y install libgl1-mesa-dev
         curl -Lo linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
@@ -43,25 +45,25 @@ stages:
     - script: echo "##vso[task.setvariable variable=target;]develop"
       condition: eq(variables['Build.SourceBranchName'], 'develop')
     - script: |
-        source /opt/qt510/bin/qt510-env.sh
+        source /opt/qt511/bin/qt511-env.sh
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
         if [ $(target) = 'develop' ]; then make debug -j5; else make release -j5; fi
       displayName: 'build'
     - script: |
-        source /opt/qt510/bin/qt510-env.sh
+        source /opt/qt511/bin/qt511-env.sh
         python3 resources/scripts/prepare_linuxdeploy.py
         cp linuxdeployqt build/linuxdeployqt && cd build
         cp ../src/QRoboticsCenter/icons/QRoboticsCenter_logo.png app/usr/share/icons/hicolor/256x256/QRoboticsCenter.png
         cp bin/QRoboticsCenter app/usr/bin/QRoboticsCenter
-        ./linuxdeployqt app/usr/share/applications/QRoboticsCenter.desktop -appimage
+        ./linuxdeployqt app/usr/share/applications/QRoboticsCenter.desktop -unsupported-allow-new-glibc -appimage
         mv QRoboticsCenter-*-x86_64.AppImage QRoboticsCenter.AppImage
-        zip -r linux-x86_64.zip QRoboticsCenter.AppImage && mv linux-x86_64.zip ../
+        zip -r QRoboticsCenter-linux-x64.zip QRoboticsCenter.AppImage && mv QRoboticsCenter-linux-x64.zip ../
       displayName: 'pack'
-    - publish: linux-x86_64.zip
+    - publish: QRoboticsCenter-linux-x64.zip
       artifact: build-linux
 
-  # BUILD for WINDOWS
+  # BUILD for WINDOWS (Qt 5.11.3)
   - job: windows
     condition: eq(variables.WINDOWS, true)
     pool:
@@ -72,51 +74,53 @@ stages:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
-        python -m aqt install --outputdir C:\Users\VssAdministrator\ 5.13.1 windows desktop win64_msvc2017_64
+        python -m aqt install --outputdir $(Build.SourcesDirectory) $(QT_VERSION) windows desktop win64_msvc2017_64
+        mv "$(Build.SourcesDirectory)\Qt$(QT_VERSION)" "$(Build.SourcesDirectory)\Qt"
       displayName: 'setup'
     - script: |
-        set PATH=C:\Users\VssAdministrator\Qt5.13.1\5.13.1\msvc2017_64\bin;%PATH%
+        set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
         nmake debug
-      displayName: 'build'
+      displayName: 'build (develop)'
       condition: eq(variables['Build.SourceBranchName'], 'develop')
     - script: |
-        set PATH=C:\Users\VssAdministrator\Qt5.13.1\5.13.1\msvc2017_64\bin;%PATH%
+        set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
         nmake release
-      displayName: 'build'
+      displayName: 'build (release)'
       condition: ne(variables['Build.SourceBranchName'], 'develop')
     - script: |
-        set PATH=C:\Users\VssAdministrator\Qt5.13.1\5.13.1\msvc2017_64\bin;%PATH%
+        set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
-        cd build && mkdir "windows-x86_64"
-        cp "bin/QRoboticsCenter.exe" "windows-x86_64/QRoboticsCenter.exe"
-        windeployqt --dir "windows-x86_64/" "windows-x86_64/QRoboticsCenter.exe"
-        7z a -tzip "windows-x86_64.zip" "./windows-x86_64/*"
-        mv "windows-x86_64.zip" ..
+        cd build && mkdir "windows-x64"
+        cp "bin/QRoboticsCenter.exe" "windows-x64/QRoboticsCenter.exe"
+        windeployqt --dir "windows-x64/" "windows-x64/QRoboticsCenter.exe"
+        7z a -tzip "QRoboticsCenter-windows-x64.zip" "./windows-x64/*"
+        mv "QRoboticsCenter-windows-x64.zip" ..
       displayName: 'pack'
-    - publish: windows-x86_64.zip
+    - publish: QRoboticsCenter-windows-x64.zip
       artifact: build-windows
 
-  # BUILD for MAC
+  # BUILD for MAC (Qt 5.12.3)
   - job: mac
     condition: eq(variables.MAC, true)
     pool:
-      vmImage: 'macOS-latest'
+      vmImage: 'macOS-10.14'
     variables:
       target: 'release' # default target
     steps:
     - script: |
-        brew update
-        brew install qt5 zip
-        brew link --force qt5
+        brew install zip
         brew link --force zip
+        curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/65a45a9e61f15046a256cdba6a008f38f79570c9/Formula/qt.rb
+        brew install ./qt.rb
+        brew link --force qt
       displayName: 'setup'
     - script: echo "##vso[task.setvariable variable=target;]develop"
       condition: eq(variables['Build.SourceBranchName'], 'develop')
@@ -127,10 +131,10 @@ stages:
       displayName: 'build'
     - script: |
         macdeployqt build/bin/QRoboticsCenter.app -dmg
-        cd build/bin/ && zip -r mac-x86_64.zip QRoboticsCenter.dmg && cd ../../
-        mv build/bin/mac-x86_64.zip .
+        cd build/bin/ && zip -r QRoboticsCenter-mac-x64.zip QRoboticsCenter.dmg && cd ../../
+        mv build/bin/QRoboticsCenter-mac-x64.zip .
       displayName: 'pack'
-    - publish: mac-x86_64.zip
+    - publish: QRoboticsCenter-mac-x64.zip
       artifact: build-mac
 
 - stage: deploy
@@ -162,9 +166,9 @@ stages:
         echo "Create pre-release from dev tag..."
         python2 github-api.py 'create-develop-release'
         echo "Upload assets to pre-release..."
-        python2 github-api.py 'upload-assets' 'linux-x64-develop' '../../../build-linux/linux-x86_64.zip'
-        python2 github-api.py 'upload-assets' 'windows-x64-develop' '../../../build-windows/windows-x86_64.zip'
-        python2 github-api.py 'upload-assets' 'mac-x64-develop' '../../../build-mac/mac-x86_64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-develop' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-develop' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-develop' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
       env:
         TOKEN: $(token)
         USER: $(user)
@@ -192,9 +196,9 @@ stages:
         echo "Create release from tag..."
         python2 github-api.py 'create-release'
         echo "Upload assets to release..."
-        python2 github-api.py 'upload-assets' 'linux-x64' '../../../build-linux/linux-x86_64.zip'
-        python2 github-api.py 'upload-assets' 'windows-x64' '../../../build-windows/windows-x86_64.zip'
-        python2 github-api.py 'upload-assets' 'mac-x64' '../../../build-mac/mac-x86_64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-$(Build.SourceBranch)' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-$(Build.SourceBranch)' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-$(Build.SourceBranch)' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
       env:
         TOKEN: $(token)
         USER: $(user)
