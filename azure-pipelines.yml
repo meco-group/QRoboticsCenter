@@ -48,7 +48,7 @@ stages:
         source /opt/qt511/bin/qt511-env.sh
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
-        if [ $(target) = 'develop' ]; then make debug -j5; else make release -j5; fi
+        if [ $(target) = 'develop' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
         source /opt/qt511/bin/qt511-env.sh
@@ -92,7 +92,7 @@ stages:
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
-        nmake release
+        nmake
       displayName: 'build (release)'
       condition: ne(variables['Build.SourceBranchName'], 'develop')
     - script: |
@@ -127,7 +127,7 @@ stages:
     - script: |
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
-        if [ $(target) = 'develop' ]; then make debug -j5; else make release -j5; fi
+        if [ $(target) = 'develop' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
         macdeployqt build/bin/QRoboticsCenter.app -dmg
