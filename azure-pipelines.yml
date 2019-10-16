@@ -178,6 +178,8 @@ stages:
   # DEPLOY if RELEASE
   - job: release
     condition: ne(variables['Build.SourceBranchName'], 'develop')
+    variables:
+      tag: ''
     steps:
     - download: current
       artifact: build-linux
@@ -188,6 +190,7 @@ stages:
     - download: current
       artifact: build-mac
       condition: eq(variables.MAC, true)
+    - bash: echo "##vso[task.setvariable variable=tag;]""$(git describe --tags)"
     - bash: |
         pip install requests 1>/dev/null
         cd resources/scripts/
@@ -196,11 +199,11 @@ stages:
         echo "Create release from tag..."
         python2 github-api.py 'create-release'
         echo "Upload assets to release..."
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-$(Build.SourceBranch)' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-$(Build.SourceBranch)' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-$(Build.SourceBranch)' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-$(tag)' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-$(tag)' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
+        python2 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-$(tag)' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
       env:
         TOKEN: $(token)
         USER: $(user)
         REPO: $(repo)
-        TAG: $(Build.SourceBranch)
+        TAG: $(tag)

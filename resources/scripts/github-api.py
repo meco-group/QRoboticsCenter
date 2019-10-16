@@ -87,7 +87,7 @@ elif MODE == "create-release":
         tag_data = get_tag(ref_data['object']['sha'])
         if tag_data is not None:
             BODY = tag_data['message']
-            BODY += ("\n\nAuthor: " + tag_data['tagger']['name'] + "\nUTC: " + tag_data['tagger']['date'])
+            # BODY += ("\n\nAuthor: " + tag_data['tagger']['name'] + "\nUTC: " + tag_data['tagger']['date'])
             print BODY
             DATA = {
                 "tag_name": TAG, "name": TAG, "draft": False, "prerelease": False,
