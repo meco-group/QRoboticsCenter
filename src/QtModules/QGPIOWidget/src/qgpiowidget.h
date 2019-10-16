@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QBoxLayout>
 #include <QLayout>
+#include <QGroupBox>
 #include <QPushButton>
 #include <QButtonGroup>
 #include <QSettings>
@@ -41,16 +42,13 @@ public:
 private:
     Ui::QGPIOWidget *ui;
 
-    QGridLayout* _input_layout;
     QGeneralInputFloat* _float_inputs[QGPIOWIDGET_FLOAT_COUNT];
 
     QRunningPlot* plot;
 
-    QBoxLayout* _output_layout;
     QGeneralOutputFloat* _float_outputs[QGPIOWIDGET_FLOAT_COUNT];
     QPushButton* set_button;
 
-    QGridLayout* grid_layout_buttons;
     QButtonGroup buttons;
 
     QVector<float> double_list;

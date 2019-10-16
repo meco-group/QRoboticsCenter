@@ -26,6 +26,6 @@ void QGeneralIO::setup(QWidget *w)
 {
     this->setLayout(new QBoxLayout(QBoxLayout::LeftToRight,this));
     this->layout()->setContentsMargins(0,0,0,0);
-    this->layout()->addWidget(_label);
     this->layout()->addWidget(w);
+    this->layout()->addWidget(_label);
 }

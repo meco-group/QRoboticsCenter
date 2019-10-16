@@ -130,8 +130,9 @@ stages:
         if [ $(target) = 'develop' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
-        macdeployqt build/bin/QRoboticsCenter.app -dmg
-        cd build/bin/ && zip -r QRoboticsCenter-mac-x64.zip QRoboticsCenter.dmg && cd ../../
+        cd build/bin/
+        macdeployqt QRoboticsCenter.app -dmg
+        zip -r QRoboticsCenter-mac-x64.zip QRoboticsCenter.dmg && cd ../../
         mv build/bin/QRoboticsCenter-mac-x64.zip .
       displayName: 'pack'
     - publish: QRoboticsCenter-mac-x64.zip

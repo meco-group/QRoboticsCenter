@@ -11,35 +11,42 @@ QGPIOWidget::QGPIOWidget(QWidget *parent) :
   ui->setupUi(this);
   ui->plot->init(10, QGPIOWIDGET_IOCOUNT); //make graph with 12 functions
 
-  _output_layout = new QBoxLayout(QBoxLayout::TopToBottom,0);
-  _input_layout = new QGridLayout(0);
-  grid_layout_buttons = new QGridLayout(0);
+  QVBoxLayout* output_layout = new QVBoxLayout();
+  QHBoxLayout* input_layout = new QHBoxLayout();
+  QGridLayout* grid_layout_buttons = new QGridLayout();
   QObject::connect(&buttons, SIGNAL(buttonClicked(int)), this, SLOT(sendButtonEvent(int)));
 
   int k;
-  for(k = 0; k < QGPIOWIDGET_BUTTONCOUNT; k++) {
-    // Label buttons
-    buttons.addButton(new QPushButton("Button " + QString::number(k), this), k);
-    // Layout buttons
-    grid_layout_buttons->addWidget(buttons.button(k), k, 0);
+  for(k = 0; k < QGPIOWIDGET_BUTTONCOUNT/2; k++) {
+    for(int l = 0; l < 2; l++) {
+      // Label buttons
+      buttons.addButton(new QPushButton("Button " + QString::number((2*k)+l), this), (2*k)+l);
+      // Layout buttons
+      grid_layout_buttons->addWidget(buttons.button((2*k)+l), k, l);
+    }
   }
 
   for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
     // Outputs floats
     _float_outputs[k] = new QGeneralOutputFloat();
-    _output_layout->addWidget(_float_outputs[k]);
+    output_layout->addWidget(_float_outputs[k]);
   }
 
   for(k = 0; k < 4; k++) {
+    QVBoxLayout *vbox = new QVBoxLayout();
+    vbox->setAlignment(Qt::AlignCenter);
     // row 1
     _float_inputs[k] = new QGeneralInputFloat();
-    _input_layout->addWidget(_float_inputs[k], 0, k);
+    vbox->addWidget(_float_inputs[k]);
     // row 2
     _float_inputs[k+4] = new QGeneralInputFloat();
-    _input_layout->addWidget(_float_inputs[k+4], 1, k);
+    vbox->addWidget(_float_inputs[k+4]);
     // row 3
     _float_inputs[k+8] = new QGeneralInputFloat();
-    _input_layout->addWidget(_float_inputs[k+8], 2, k);
+    vbox->addWidget(_float_inputs[k+8]);
+
+    input_layout->addLayout(vbox);
+    input_layout->insertSpacing(-1, 10);
   }
 
   for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
@@ -57,11 +64,11 @@ QGPIOWidget::QGPIOWidget(QWidget *parent) :
 
   checkCheckboxs();
   set_button = new QPushButton("Set");
-  _output_layout->addWidget(set_button, QGPIOWIDGET_IOCOUNT);
+  output_layout->addWidget(set_button, QGPIOWIDGET_IOCOUNT);
   QObject::connect(set_button, SIGNAL(released()), this, SLOT(sendGPIO()));
 
-  ui->channels_frame->setLayout(_input_layout);
-  ui->frame_send->setLayout(_output_layout);
+  ui->channels_frame->setLayout(input_layout);
+  ui->frame_send->setLayout(output_layout);
   ui->frame_buttons->setLayout(grid_layout_buttons);
 
   //start timer
