@@ -43,7 +43,6 @@ void QSerialProtocol::decode() {
       } else if(_transmitter_id != _msg.sysid){
         qDebug() << "System id appears to have changed";
       }
-      qDebug() << "Got message with ID" << _msg.msgid;
       switch(_msg.msgid) {
         case MAVLINK_MSG_ID_HEARTBEAT: { MAVLINK_DECODE(heartbeat) }
         case MAVLINK_MSG_ID_GPIO: { MAVLINK_DECODE(gpio) }

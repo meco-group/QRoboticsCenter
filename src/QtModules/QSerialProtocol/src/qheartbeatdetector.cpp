@@ -6,7 +6,7 @@ QHeartbeatDetector::QHeartbeatDetector(QSerialProtocol *datanode) :
   connectTo(_datanode);
 
   _timer.setSingleShot(true);
-  _timer.setInterval(1000);
+  _timer.setInterval(3000);
   QObject::connect(&_timer, SIGNAL(timeout()), this, SLOT(timeout()));
 }
 
