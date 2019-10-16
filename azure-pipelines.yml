@@ -190,7 +190,7 @@ stages:
     - download: current
       artifact: build-mac
       condition: eq(variables.MAC, true)
-    - bash: echo "##vso[task.setvariable variable=tag;]" "$(git describe --tags)"
+    - bash: echo "##vso[task.setvariable variable=tag;]""$(git describe --tags)"
     - bash: |
         pip install requests 1>/dev/null
         cd resources/scripts/
