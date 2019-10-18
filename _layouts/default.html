@@ -41,7 +41,7 @@
       <section>
         <div class="menu">
           {% assign nentries = site.menu.entries | size %}
-          {% for link in site.menu.entries %}{% assign idx = forloop.index %}<a href="{{ link.url }}">{{ link.title }}</a> {% if idx != nentries %}&mdash; {% endif %}{% endfor %}
+          {% for link in site.menu.entries %}{% assign idx = forloop.index %}<a href="{{ link.url | absolute_url }}">{{ link.title }}</a> {% if idx != nentries %}&mdash; {% endif %}{% endfor %}
         </div>
         <hr>
 
