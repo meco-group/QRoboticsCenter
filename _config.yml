@@ -1,4 +1,7 @@
 theme: jekyll-theme-minimal
+
+baseurl: "QRoboticsCenter/"
+
 plugins:
   - "jekyll-github-metadata"
   - "jekyll-menus"
