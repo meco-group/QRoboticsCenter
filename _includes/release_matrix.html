@@ -1,0 +1,11 @@
+{% for asset in include.release %}
+{% if asset.name contains 'linux' %}
+{% assign name = "Linux" %}
+{% assign class = "fa-ubuntu" %}
+{% elsif asset.name contains 'windows' %}
+{% assign name = "Windows" %}
+{% assign class = "fa-windows" %}
+{% else %}
+{% assign name = "Mac" %}
+{% assign class = "fa-apple" %}
+{% endif %}<a href="{{ asset.browser_download_url }}"><i class="fab {{ class }}"></i> {{ name }}</a> {{ asset.size }}; {{ asset.download_count }}{% assign idx = forloop.index %}{% assign nr = site.github.latest_release.assets | size %}{% if idx != nr %} - {% endif %}{% endfor %}

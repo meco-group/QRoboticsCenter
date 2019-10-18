@@ -1,10 +1,15 @@
-theme: jekyll-theme-minimal
+#
+# This file contains configuration flags to customize your site
+#
 
-baseurl: "QRoboticsCenter/"
+# Name of your site (displayed in the header)
+name: QRoboticsCenter
+
+# baseurl: /QRoboticsCenter
 
 plugins:
-  - "jekyll-github-metadata"
-  - "jekyll-menus"
+  - jekyll-github-metadata
+  - jekyll-menus
 
 menu:
   entries:
@@ -14,3 +19,11 @@ menu:
       url: /ci-cd
     - title: About
       url: /about
+
+# Includes an icon in the footer for each username you enter
+footer-links:
+  github: meco-group/QRoboticsCenter
+
+permalink: /:title/
+
+include: ['_pages']

@@ -1,6 +1,42 @@
-.menu {
-  display: block;
-  margin: 25px auto;
-  font-size: 1.25em;
-  text-align: right;
+// ul.menu {
+//   // display: block;
+//   margin: 25px auto;
+//   font-size: 1.25em;
+//   text-align: right;
+//   list-style-type: none;
+//   padding: 0;
+//   li {
+//     display: inline;
+//     margin-left: 25px;
+//     :hover {
+//       font-weight: inherit;
+//     }
+//   }
+// }
+//
+// h1 {
+//   font-size: 1.75em;
+// }
+// h2 {
+//   font-size: 1.5em;
+// }
+
+.site-avatar {
+  display: none;
+}
+
+h1.site-name {
+  text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #000;
+}
+
+h1 {
+  font-weight: 500;
+}
+
+h2, h3 {
+  font-weight: 500;
 }
