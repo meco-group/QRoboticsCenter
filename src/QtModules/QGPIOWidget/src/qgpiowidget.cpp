@@ -100,7 +100,7 @@ void QGPIOWidget::restoreState(QString group)
     move(settings.value("pos", QPoint(200, 200)).toPoint());
 
     // restore channel names
-    settings.beginReadArray("FloatChannels");
+    settings.beginReadArray("Channels");
     for(int k = 0;k < QGPIOWIDGET_FLOAT_COUNT;k++){
         settings.setArrayIndex(k);
         if(settings.contains("input")){
@@ -135,7 +135,7 @@ void QGPIOWidget::saveState(QString group)
     settings.setValue("pos", pos());
 
     // save channel states
-    settings.beginWriteArray("FloatChannels");
+    settings.beginWriteArray("Channels");
     for(int k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++){
         settings.setArrayIndex(k);
         settings.setValue("input",_float_inputs[k]->text());
