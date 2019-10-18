@@ -1,11 +1,24 @@
-{% for asset in include.release %}
-{% if asset.name contains 'linux' %}
-{% assign name = "Linux" %}
-{% assign class = "fa-ubuntu" %}
-{% elsif asset.name contains 'windows' %}
-{% assign name = "Windows" %}
-{% assign class = "fa-windows" %}
-{% else %}
-{% assign name = "Mac" %}
-{% assign class = "fa-apple" %}
-{% endif %}<a href="{{ asset.browser_download_url }}"><i class="fab {{ class }}"></i> {{ name }}</a> {{ asset.size }}; {{ asset.download_count }}{% assign idx = forloop.index %}{% assign nr = site.github.latest_release.assets | size %}{% if idx != nr %} - {% endif %}{% endfor %}
+<ul class="release-matrix">
+  {% for asset in include.release.assets %}
+    {% if asset.name contains 'linux' %}
+      {% assign name = "Linux" %}
+      {% assign class = "fab fa-ubuntu" %}
+    {% elsif asset.name contains 'windows' %}
+      {% assign name = "Windows" %}
+      {% assign class = "fab fa-windows" %}
+    {% elsif asset.name contains 'mac' %}
+      {% assign name = "Mac" %}
+      {% assign class = "fab fa-apple" %}
+    {% else %}
+      {% assign name = "Undefined" %}
+      {% assign class = "far fa-circle" %}
+    {% endif %}
+    <li>
+      <span class="platform">
+        <a href="{{ asset.browser_download_url }}"><i class="{{ class }}"></i> {{ name }}</a>
+      </span>
+      <span class="size" title="Download size">{{ asset.size | divided_by: 1000000 }} MB</span>
+      <span class="downloads tag green" title="Number of downloads">{{ asset.download_count }}</span>
+    </li>
+  {% endfor %}
+</ul>

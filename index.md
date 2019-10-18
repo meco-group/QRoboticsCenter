@@ -2,16 +2,10 @@
 layout: default
 title: Home
 ---
-# Get the latest release
-## {{ site.github.latest_release.name }}
+# Get the latest release: {{ site.github.latest_release.name }}
+{% include release_matrix.html release=site.github.latest_release %}
 
-{% assign latest = site.github.latest_release %}
-{% include release_matrix.html release=latest %}
-
-<hr />
-
-# For the adventurous
-## Develop build
+## For the adventurous: develop build
 {% assign prereleases = site.github.releases | where: "prerelease", true %}
-{% assign develop = prereleases[0] %}
-{% include release_matrix.html release=develop %}
+{% assign devrel = prereleases[0] %}
+{% include release_matrix.html release=devrel %}

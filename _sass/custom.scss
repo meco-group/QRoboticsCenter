@@ -1,25 +1,36 @@
-// ul.menu {
-//   // display: block;
-//   margin: 25px auto;
-//   font-size: 1.25em;
-//   text-align: right;
-//   list-style-type: none;
-//   padding: 0;
-//   li {
-//     display: inline;
-//     margin-left: 25px;
-//     :hover {
-//       font-weight: inherit;
-//     }
-//   }
-// }
-//
-// h1 {
-//   font-size: 1.75em;
-// }
-// h2 {
-//   font-size: 1.5em;
-// }
+ul.release-matrix {
+  // display: block;
+  margin: 25px auto;
+  list-style-type: none;
+  padding: 0;
+  li {
+    width: 100%;
+    .platform {
+      width: 47%;
+      display: inline-block;
+      text-align: right;
+      margin-right: 6%;
+    }
+    .size {
+      width: 10%;
+      display: inline-block;
+    }
+  }
+}
+
+.tag {
+  font-size: .75em;
+  padding: 2px 13px;
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  &.green {
+    background-color: green;
+  }
+  &.red {
+    background-color: red;
+  }
+}
 
 .site-avatar {
   display: none;

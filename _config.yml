@@ -5,7 +5,7 @@
 # Name of your site (displayed in the header)
 name: QRoboticsCenter
 
-# baseurl: /QRoboticsCenter
+baseurl: /QRoboticsCenter
 
 plugins:
   - jekyll-github-metadata
