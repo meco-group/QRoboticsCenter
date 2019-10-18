@@ -1,6 +1,7 @@
 ---
 layout: default
 title: CI/CD functionality
+permalink: /ci-cd
 ---
 # Outline
 - The CI/CD is set up to automatically build binaries for Windows, Mac and Linux
