@@ -16,7 +16,7 @@ menu:
     - title: Home
       url: /
     - title: CI/CD
-      url: /ci-cd
+      url: /cicd
     - title: About
       url: /about
 
