@@ -153,8 +153,8 @@ void QGPIOWidget::setLabels()
 {
     int k;
     for(k = 0; k < QGPIOWIDGET_FLOAT_COUNT; k++) {
-        _float_outputs[k]->setText("FloatOut" + QString::number(k));
-        _float_inputs[k]->setText("FloatIn" + QString::number(k));
+        _float_outputs[k]->setText("ValueOut" + QString::number(k));
+        _float_inputs[k]->setText("ValueIn" + QString::number(k));
         QObject::connect(_float_outputs[k]->getLabel(),SIGNAL(textChanged(QString)),this,SLOT(inputLabelsSend()));
     }
 }
