@@ -25,16 +25,16 @@ stages:
   condition: eq(variables.BUILD, true)
   jobs:
 
-  # BUILD for LINUXc
+  # BUILD for LINUX
   - job: linux
     condition: eq(variables.LINUX, true)
     pool:
-      vmImage: 'ubuntu-18.04'
+      vmImage: 'ubuntu-16.04'
     variables:
       target: 'release' # default target
     steps:
     - script: |
-        sudo add-apt-repository ppa:beineri/opt-qt-5.11.3-bionic
+        sudo add-apt-repository ppa:beineri/opt-qt-5.11.3-xenial
         sudo apt-get update
         sudo apt-get -y install qt511-meta-full
         sudo apt-get -y install qt5-qmake
