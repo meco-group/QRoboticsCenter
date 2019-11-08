@@ -29,9 +29,11 @@ void QRoboticsCenterMainwindow::setup() {
   scan->addAction(_scan);
   scan->addSeparator();
   _scan_usb->setCheckable(true);
-  _scan_bluetooth->setCheckable(true);
   scan->addAction(_scan_usb);
+#ifdef WITH_BLUETOOTH
+  _scan_bluetooth->setCheckable(true);
   scan->addAction(_scan_bluetooth);
+#endif
 
   // Help menu
   QMenu *help = menuBar()->addMenu("Help");
@@ -41,7 +43,9 @@ void QRoboticsCenterMainwindow::setup() {
 
 void QRoboticsCenterMainwindow::scan() {
   if(_scan_usb->isChecked()) _scanner->scanUSB();
+#ifdef WITH_BLUETOOTH
   if(_scan_bluetooth->isChecked()) _scanner->scanBT();
+#endif
 }
 
 void QRoboticsCenterMainwindow::saveSettings() {
@@ -55,7 +59,9 @@ void QRoboticsCenterMainwindow::saveSettings() {
 
   //save scan settings
   settings.setValue("scan_usb", _scan_usb->isChecked());
+#ifdef WITH_BLUETOOTH
   settings.setValue("scan_bluetooth", _scan_bluetooth->isChecked());
+#endif
 
   settings.endGroup();
 
@@ -76,7 +82,9 @@ void QRoboticsCenterMainwindow::loadSettings() {
 
   //save scan settings
   _scan_usb->setChecked(settings.value("scan_usb",true).toBool());
+#ifdef WITH_BLUETOOTH
   _scan_bluetooth->setChecked(settings.value("scan_bluetooth",false).toBool());
+#endif
 
   settings.endGroup();
 }

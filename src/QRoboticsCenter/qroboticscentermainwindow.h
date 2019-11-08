@@ -25,7 +25,9 @@ class QRoboticsCenterMainwindow : public QMainWindow {
 
     QAction* _scan = new QAction("Scan", this);
     QAction* _scan_usb = new QAction("USB", this);
+#ifdef WITH_BLUETOOTH
     QAction* _scan_bluetooth = new QAction("Bluetooth", this);
+#endif
     QShowAboutDialogAction* _about = new QShowAboutDialogAction(0);
 
     void setup();

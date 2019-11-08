@@ -2,7 +2,10 @@
     included_modules += $$PWD
     message( "Including $$PWD" )
 
-    QT += serialport bluetooth
+    QT += serialport
+    contains(CONFIG, bluetooth) {
+      QT += bluetooth
+    }
 
     INCLUDEPATH += $$PWD/mavlink \
                    $$PWD
