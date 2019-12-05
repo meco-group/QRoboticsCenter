@@ -6,7 +6,7 @@ QSerialScanner::QSerialScanner(QObject *parent) :
   ,_local_device_BT(new QBluetoothLocalDevice)
 #endif
 {
-  qDebug() << "QSerialScanner::QSerialScanner()";
+  qDebug() << "Creating new QSerialScanner";
   this->setupUSB();
 #ifdef WITH_BLUETOOTH
   this->setupBT();
@@ -21,7 +21,7 @@ void QSerialScanner::query() {
 }
 
 void QSerialScanner::setupUSB() {
-  qDebug() << "QSerialScanner::setupUSB: Setting up USB discovery ...";
+  qDebug() << "Setting up USB discovery ...";
   _discovery_agent_USB = new QUSBDeviceDiscoveryAgent();
   connect(_discovery_agent_USB, SIGNAL(deviceDiscovered(QSerialPortInfo)),
           this, SLOT(connectionUSB(QSerialPortInfo)));
@@ -29,7 +29,7 @@ void QSerialScanner::setupUSB() {
 
 #ifdef WITH_BLUETOOTH
 void QSerialScanner::setupBT() {
-  qDebug() << "QSerialScanner::setupBT: Setting up Bluetooth discovery ...";
+  qDebug() << "Setting up Bluetooth discovery ...";
   _discovery_agent_BT = new QBluetoothDeviceDiscoveryAgent();
 
   // Bluetooth adaptor configuration
@@ -43,19 +43,19 @@ void QSerialScanner::setupBT() {
 #endif
 
 void QSerialScanner::scanUSB() {
-  qDebug() << "QSerialScanner::scanUSB: Starting USB discovery agent ...";
+  qDebug() << "Starting USB discovery agent ...";
   _discovery_agent_USB->start();
 }
 
 #ifdef WITH_BLUETOOTH
 void QSerialScanner::scanBT() {
-  qDebug() << "QSerialScanner::scanBT: Starting Bluetooth discovery agent ...";
+  qDebug() << "Starting Bluetooth discovery agent ...";
   _discovery_agent_BT->start();
 }
 #endif
 
 void QSerialScanner::scanUDP() {
-  qDebug() << "QSerialScanner::scanUDP: Starting UDP discovery agent ...";
+  qDebug() << "Starting UDP discovery agent ...";
   //_discovery_agent_TCP->start();
 }
 
@@ -67,7 +67,7 @@ void QSerialScanner::checkConnection(QSerialProtocol *connection) {
 }
 
 void QSerialScanner::connectionUSB(QSerialPortInfo info) {
-  qDebug() << "QSerialScanner::connectionUSB: USB device discovered:" << info.portName();
+  qDebug() << "USB device discovered:" << info.portName();
   qDebug() << "\tSerial number:" << info.portName();
   qDebug() << "\tBusy:" << info.isBusy();
   qDebug() << "\tNull:" << info.isNull();
@@ -80,9 +80,9 @@ void QSerialScanner::connectionUSB(QSerialPortInfo info) {
   QSerialPort *io_device = new QSerialPort(info);
   io_device->setBaudRate(QSerialPort::Baud115200);
   if(!io_device->open(QIODevice::ReadWrite))
-    qDebug() << "QSerialScanner::connectionUSB: Error opening port" << io_device->portName();
+    qDebug() << "Error opening port" << io_device->portName();
   else
-    qDebug() << "QSerialScanner::connectionUSB: Successfully opened port" << io_device->portName();
+    qDebug() << "Successfully opened port" << io_device->portName();
 
   QSerialProtocol *connection = new QSerialProtocol(io_device, this, io_device->portName());
   checkConnection(connection);
@@ -91,9 +91,9 @@ void QSerialScanner::connectionUSB(QSerialPortInfo info) {
 #ifdef WITH_BLUETOOTH
 void QSerialScanner::connectionBT(QBluetoothDeviceInfo info) {
   QBluetoothSocket *io_device = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
-  qDebug() << "QSerialScanner::connectionBT: Created Bluetooth socket.";
+  qDebug() << "Created Bluetooth socket.";
   io_device->connectToService(info.address(),QBluetoothUuid(QBluetoothUuid::SerialPort));
-  qDebug() << "QSerialScanner::connectionBT: Bluetooth connection established on" << info.name();
+  qDebug() << "Bluetooth connection established on" << info.name();
 
   QSerialProtocol *connection = new QSerialProtocol(io_device, this, info.name());
   checkConnection(connection);
