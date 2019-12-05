@@ -34,9 +34,9 @@ stages:
       target: 'release' # default target
     steps:
     - script: |
-        python -m pip install --upgrade pip setuptools wheel
-        python -m pip install aqtinstall
-        python -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) linux desktop
+        python3 -m pip install --upgrade pip setuptools wheel
+        python3 -m pip install aqtinstall
+        python3 -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) linux desktop
         curl -Lo linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
         chmod a+x linuxdeployqt
       displayName: 'setup'
@@ -70,9 +70,9 @@ stages:
       target: 'release' # default target
     steps:
     - script: |
-        python -m pip install --upgrade pip setuptools wheel
-        python -m pip install aqtinstall
-        python -m aqt install --outputdir $(Build.BinariesDirectory)\Qt $(QT_VERSION) windows desktop win64_msvc2017_64
+        python3 -m pip install --upgrade pip setuptools wheel
+        python3 -m pip install aqtinstall
+        python3 -m aqt install --outputdir $(Build.BinariesDirectory)\Qt $(QT_VERSION) windows desktop win64_msvc2017_64
       displayName: 'setup'
     - script: |
         set PATH=$(Build.BinariesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
@@ -113,9 +113,9 @@ stages:
       target: 'release' # default target
     steps:
     - script: |
-        python -m pip install --upgrade pip setuptools wheel
-        python -m pip install aqtinstall
-        python -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) mac desktop
+        python3 -m pip install --upgrade pip setuptools wheel
+        python3 -m pip install aqtinstall
+        python3 -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) mac desktop
       displayName: 'setup'
     - script: echo "##vso[task.setvariable variable=target;]debug"
       condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
@@ -158,15 +158,15 @@ stages:
         pip install requests 1>/dev/null
         cd resources/scripts/
         echo "Delete pre-release of dev tag..."
-        python2 github-api.py 'delete-release'
+        python3 github-api.py 'delete-release'
         echo "Update dev tag..."
-        python2 github-api.py 'update-tag' '$(Build.SourceVersion)'
+        python3 github-api.py 'update-tag' '$(Build.SourceVersion)'
         echo "Create pre-release from dev tag..."
-        python2 github-api.py 'create-develop-release'
+        python3 github-api.py 'create-develop-release'
         echo "Upload assets to pre-release..."
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-develop' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-develop' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-develop' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
+        python3 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-develop' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
+        python3 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-develop' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
+        python3 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-develop' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
       env:
         TOKEN: $(token)
         USER: $(user)
@@ -193,13 +193,13 @@ stages:
         pip install requests 1>/dev/null
         cd resources/scripts/
         echo "Delete release if already exists for this tag..."
-        python2 github-api.py 'delete-release'
+        python3 github-api.py 'delete-release'
         echo "Create release from tag..."
-        python2 github-api.py 'create-release'
+        python3 github-api.py 'create-release'
         echo "Upload assets to release..."
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-$(tag)' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-$(tag)' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
-        python2 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-$(tag)' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
+        python3 github-api.py 'upload-assets' 'QRoboticsCenter-linux-x64-$(tag)' '../../../build-linux/QRoboticsCenter-linux-x64.zip'
+        python3 github-api.py 'upload-assets' 'QRoboticsCenter-windows-x64-$(tag)' '../../../build-windows/QRoboticsCenter-windows-x64.zip'
+        python3 github-api.py 'upload-assets' 'QRoboticsCenter-mac-x64-$(tag)' '../../../build-mac/QRoboticsCenter-mac-x64.zip'
       env:
         TOKEN: $(token)
         USER: $(user)
