@@ -35,7 +35,7 @@ stages:
     steps:
     - script: |
         python3 -m pip install --upgrade pip setuptools wheel
-        python3 -m pip install aqtinstall
+        python3 -m pip install --user aqtinstall
         python3 -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) linux desktop
         curl -Lo linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
         chmod a+x linuxdeployqt
@@ -70,9 +70,9 @@ stages:
       target: 'release' # default target
     steps:
     - script: |
-        python3 -m pip install --upgrade pip setuptools wheel
-        python3 -m pip install aqtinstall
-        python3 -m aqt install --outputdir $(Build.BinariesDirectory)\Qt $(QT_VERSION) windows desktop win64_msvc2017_64
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install aqtinstall
+        python -m aqt install --outputdir $(Build.BinariesDirectory)\Qt $(QT_VERSION) windows desktop win64_msvc2017_64
       displayName: 'setup'
     - script: |
         set PATH=$(Build.BinariesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
@@ -114,7 +114,7 @@ stages:
     steps:
     - script: |
         python3 -m pip install --upgrade pip setuptools wheel
-        python3 -m pip install aqtinstall
+        python3 -m pip install --user aqtinstall
         python3 -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) mac desktop
       displayName: 'setup'
     - script: echo "##vso[task.setvariable variable=target;]debug"
@@ -144,6 +144,8 @@ stages:
   # create develop-release if branch name is 'develop'
   - job: develop
     condition: eq(variables['Build.SourceBranchName'], 'develop')
+    pool:
+      vmImage: 'ubuntu-16.04'
     steps:
     - download: current
       artifact: build-linux
@@ -155,7 +157,7 @@ stages:
       artifact: build-mac
       condition: eq(variables.MAC, true)
     - bash: |
-        pip install requests 1>/dev/null
+        python3 -m pip install --user requests
         cd resources/scripts/
         echo "Delete pre-release of dev tag..."
         python3 github-api.py 'delete-release'
@@ -176,6 +178,8 @@ stages:
   # create release if branch contains 'refs/tags/v' (i.e., is tagged with 'v*')
   - job: release
     condition: contains(variables['Build.SourceBranch'], 'refs/tags/v')
+    pool:
+      vmImage: 'ubuntu-16.04'
     variables:
       tag: ''
     steps:
@@ -190,7 +194,7 @@ stages:
       condition: eq(variables.MAC, true)
     - bash: echo "##vso[task.setvariable variable=tag;]""$(git describe --tags)"
     - bash: |
-        pip install requests 1>/dev/null
+        python3 -m pip install --user requests
         cd resources/scripts/
         echo "Delete release if already exists for this tag..."
         python3 github-api.py 'delete-release'
