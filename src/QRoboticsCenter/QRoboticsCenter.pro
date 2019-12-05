@@ -11,6 +11,9 @@ TARGET = QRoboticsCenter
 TEMPLATE = app
 CONFIG += debug_and_release
 
+# comment out to deactivate Bluetooth
+#CONFIG += bluetooth
+
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_PATCH}
 build_pass: CONFIG(debug, debug|release) {
   DEFINES += "VERSION=\"\\\"$${VERSION}-develop\\\"\""
@@ -21,7 +24,11 @@ else: build_pass {
              QT_NO_DEBUG_OUTPUT
 }
 
+# defines
 DEFINES += QT_NO_PRINTER
+contains(CONFIG, bluetooth) {
+  DEFINES += WITH_BLUETOOTH
+}
 
 INCLUDEPATH += $$PWD
 

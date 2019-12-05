@@ -1,16 +1,23 @@
 #include "qserialscanner.h"
 
 QSerialScanner::QSerialScanner(QObject *parent) :
-  QObject(parent), _local_device_BT(new QBluetoothLocalDevice)
+  QObject(parent)
+#ifdef WITH_BLUETOOTH
+  ,_local_device_BT(new QBluetoothLocalDevice)
+#endif
 {
   qDebug() << "QSerialScanner::QSerialScanner()";
   this->setupUSB();
+#ifdef WITH_BLUETOOTH
   this->setupBT();
+#endif
 }
 
 void QSerialScanner::query() {
   this->scanUSB();
+#ifdef WITH_BLUETOOTH
   this->scanBT();
+#endif
 }
 
 void QSerialScanner::setupUSB() {
@@ -20,6 +27,7 @@ void QSerialScanner::setupUSB() {
           this, SLOT(connectionUSB(QSerialPortInfo)));
 }
 
+#ifdef WITH_BLUETOOTH
 void QSerialScanner::setupBT() {
   qDebug() << "QSerialScanner::setupBT: Setting up Bluetooth discovery ...";
   _discovery_agent_BT = new QBluetoothDeviceDiscoveryAgent();
@@ -32,16 +40,19 @@ void QSerialScanner::setupBT() {
   connect(_discovery_agent_BT, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
           this, SLOT(connectionBT(QBluetoothDeviceInfo)));
 }
+#endif
 
 void QSerialScanner::scanUSB() {
   qDebug() << "QSerialScanner::scanUSB: Starting USB discovery agent ...";
   _discovery_agent_USB->start();
 }
 
+#ifdef WITH_BLUETOOTH
 void QSerialScanner::scanBT() {
   qDebug() << "QSerialScanner::scanBT: Starting Bluetooth discovery agent ...";
   _discovery_agent_BT->start();
 }
+#endif
 
 void QSerialScanner::scanUDP() {
   qDebug() << "QSerialScanner::scanUDP: Starting UDP discovery agent ...";
@@ -77,6 +88,7 @@ void QSerialScanner::connectionUSB(QSerialPortInfo info) {
   checkConnection(connection);
 }
 
+#ifdef WITH_BLUETOOTH
 void QSerialScanner::connectionBT(QBluetoothDeviceInfo info) {
   QBluetoothSocket *io_device = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
   qDebug() << "QSerialScanner::connectionBT: Created Bluetooth socket.";
@@ -86,6 +98,7 @@ void QSerialScanner::connectionBT(QBluetoothDeviceInfo info) {
   QSerialProtocol *connection = new QSerialProtocol(io_device, this, info.name());
   checkConnection(connection);
 }
+#endif
 
 void QSerialScanner::connectionUDP(QString server, int port) {
     /*QTcpSocket* socket = new QTcpSocket;
