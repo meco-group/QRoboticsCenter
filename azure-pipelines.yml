@@ -18,7 +18,7 @@ variables:
   - name: MAC
     value: true
   - name: QT_VERSION
-    value: '5.11.3'
+    value: '5.13.2'
 
 stages:
 - stage: build
@@ -34,24 +34,22 @@ stages:
       target: 'release' # default target
     steps:
     - script: |
-        sudo add-apt-repository ppa:beineri/opt-qt-5.11.3-xenial
-        sudo apt-get update
-        sudo apt-get -y install qt511-meta-full
-        sudo apt-get -y install qt5-qmake
-        sudo apt-get -y install libgl1-mesa-dev
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install aqtinstall
+        python -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) linux desktop
         curl -Lo linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
         chmod a+x linuxdeployqt
       displayName: 'setup'
     - script: echo "##vso[task.setvariable variable=target;]debug"
       condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
-        source /opt/qt511/bin/qt511-env.sh
+        source resources/scripts/unix_qt_env.sh $(Build.BinariesDirectory)/Qt/$(QT_VERSION)/gcc_64
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
         if [ $(target) = 'debug' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
-        source /opt/qt511/bin/qt511-env.sh
+        source resources/scripts/unix_qt_env.sh $(Build.BinariesDirectory)/Qt/$(QT_VERSION)/gcc_64
         python3 resources/scripts/prepare_linuxdeploy.py
         cp linuxdeployqt build/linuxdeployqt && cd build
         cp ../src/QRoboticsCenter/icons/QRoboticsCenter_logo.png app/usr/share/icons/hicolor/256x256/QRoboticsCenter.png
@@ -74,10 +72,10 @@ stages:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
-        python -m aqt install --outputdir "$(Build.SourcesDirectory)\Qt" $(QT_VERSION) windows desktop win64_msvc2017_64
+        python -m aqt install --outputdir $(Build.BinariesDirectory)\Qt $(QT_VERSION) windows desktop win64_msvc2017_64
       displayName: 'setup'
     - script: |
-        set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
+        set PATH=$(Build.BinariesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
@@ -86,7 +84,7 @@ stages:
       displayName: 'build (debug)'
       condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
-        set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
+        set PATH=$(Build.BinariesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
@@ -95,7 +93,7 @@ stages:
       displayName: 'build (release)'
       condition: contains(variables['Build.SourceBranch'], 'refs/tags/v') # build release if it's a v* tag
     - script: |
-        set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
+        set PATH=$(Build.BinariesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         cd build && mkdir "windows-x64"
         cp "bin/QRoboticsCenter.exe" "windows-x64/QRoboticsCenter.exe"
@@ -115,20 +113,20 @@ stages:
       target: 'release' # default target
     steps:
     - script: |
-        brew install zip
-        brew link --force zip
-        curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/65a45a9e61f15046a256cdba6a008f38f79570c9/Formula/qt.rb
-        brew install ./qt.rb
-        brew link --force qt
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install aqtinstall
+        python -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) mac desktop
       displayName: 'setup'
     - script: echo "##vso[task.setvariable variable=target;]debug"
       condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
+        source resources/scripts/unix_qt_env.sh $(Build.BinariesDirectory)/Qt/$(QT_VERSION)/clang_64
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
         if [ $(target) = 'debug' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
+        source resources/scripts/unix_qt_env.sh $(Build.BinariesDirectory)/Qt/$(QT_VERSION)/clang_64
         cd build/bin/
         macdeployqt QRoboticsCenter.app -dmg
         zip -r QRoboticsCenter-mac-x64.zip QRoboticsCenter.dmg && cd ../../
