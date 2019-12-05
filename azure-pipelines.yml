@@ -74,8 +74,7 @@ stages:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
-        python -m aqt install --outputdir $(Build.SourcesDirectory) $(QT_VERSION) windows desktop win64_msvc2017_64
-        mv "$(Build.SourcesDirectory)\Qt$(QT_VERSION)" "$(Build.SourcesDirectory)\Qt"
+        python -m aqt install --outputdir "$(Build.SourcesDirectory)\Qt" $(QT_VERSION) windows desktop win64_msvc2017_64
       displayName: 'setup'
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
