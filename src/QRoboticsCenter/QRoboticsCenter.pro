@@ -12,7 +12,7 @@ TEMPLATE = app
 CONFIG += debug_and_release
 
 # comment out to deactivate Bluetooth
-#CONFIG += bluetooth
+CONFIG += bluetooth
 
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_PATCH}
 build_pass: CONFIG(debug, debug|release) {
