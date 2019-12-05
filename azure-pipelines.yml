@@ -35,7 +35,7 @@ stages:
     steps:
     - script: |
         sudo apt-get update
-        sudo apt-get -y install libgl1-mesa-dev
+        sudo apt-get -y install libgl1-mesa-dev libxkbcommon-x11-0
         python3 -m pip install --upgrade pip setuptools wheel
         python3 -m pip install --user aqtinstall
         python3 -m aqt install --internal --outputdir $(Build.BinariesDirectory)/Qt $(QT_VERSION) linux desktop
