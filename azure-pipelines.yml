@@ -3,6 +3,13 @@ trigger:
   - develop
   - refs/tags/v*
 
+pr:
+  autoCancel: false
+  branches:
+    include:
+      - master
+      - develop
+
 variables:
   - group: Github
   # (de)activate stages
@@ -143,7 +150,7 @@ stages:
     - build
   jobs:
 
-  # DEPLOY if DEVELOP
+  # create develop-release if branch name is 'develop'
   - job: develop
     condition: eq(variables['Build.SourceBranchName'], 'develop')
     steps:
@@ -175,9 +182,9 @@ stages:
         REPO: $(repo)
         TAG: 'dev'
 
-  # DEPLOY if RELEASE
+  # create release if branch contains 'refs/tags/v' (i.e., is tagged with 'v*')
   - job: release
-    condition: ne(variables['Build.SourceBranchName'], 'develop')
+    condition: contains(variables['Build.SourceBranch'], 'refs/tags/v')
     variables:
       tag: ''
     steps:
