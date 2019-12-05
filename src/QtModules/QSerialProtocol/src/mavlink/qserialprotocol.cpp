@@ -1,14 +1,19 @@
 #include <qserialprotocol.h>
 
-QSerialProtocol::QSerialProtocol(QIODevice *io, QObject *parent) :
+QSerialProtocol::QSerialProtocol(QIODevice *io, QObject *parent, QString name) :
     QDataNode(parent), _io(io)
 {
+  qDebug() << "QSerialProtocol::QSerialProtocol()";
+  this->setObjectName(name);
+
   QObject::connect(_io, &QIODevice::readyRead, this, &QSerialProtocol::decode);
 
   _activate->setCheckable(true);
   _activate->setChecked(true);
   QObject::connect(_activate, &QAction::toggled, this, &QSerialProtocol::on_activate_toggled);
   startTimer(10);
+
+  qDebug() << "QSerialProtocol::QSerialProtocol(): QSerialProtocol set up for" << this->objectName();
 }
 
 QSerialProtocol::~QSerialProtocol() {
@@ -35,7 +40,7 @@ void QSerialProtocol::decode() {
   break;
 
   QByteArray b = _io->readAll();
-  for(size_t k = 0; k < b.length(); k++) {
+  for(int k = 0; k < b.length(); k++) {
     if(mavlink_parse_char(0, b.at(k), &_msg, &_status)) {
       _packet_count++;
       if(_transmitter_id < 0) {
@@ -82,10 +87,21 @@ void QSerialProtocol::encode(mavlink_message_t msg) {
 }
 
 void QSerialProtocol::on_activate_toggled() {
-  if(_activate->isChecked()){
-    _io->open(QIODevice::ReadWrite);
+  qDebug() << "QSerialProtocol::on_activate_toggled()";
+  if(_activate->isChecked()) {
+    if(!_io->isOpen()) {
+      _io->open(QIODevice::ReadWrite);
+      qDebug() << "QSerialProtocol::on_activate_toggled: QIODevice opened.";
+    } else {
+      qDebug() << "QSerialProtocol::on_activate_toggled: QIODevice already opened.";
+    }
   } else {
-    _io->close();
+    if(_io->isOpen()) {
+      _io->close();
+      qDebug() << "QSerialProtocol::on_activate_toggled: QIODevice closed.";
+    } else {
+      qDebug() << "QSerialProtocol::on_activate_toggled: QIODevice already closed.";
+    }
   }
 }
 

@@ -54,7 +54,7 @@ void QAboutDialog::setIcon(QIcon icon) {
   ui->icon_label->setPixmap(pixmap.scaled(ui->icon_label->rect().size(),Qt::KeepAspectRatio));
 }
 
-QShowAboutDialogAction::QShowAboutDialogAction(QObject *parent) : QAction("About",parent) {
+QShowAboutDialogAction::QShowAboutDialogAction(QObject *parent) : QAction("About", parent) {
   QObject::connect(this, &QShowAboutDialogAction::triggered, this, &QShowAboutDialogAction::showDialog);
 }
 

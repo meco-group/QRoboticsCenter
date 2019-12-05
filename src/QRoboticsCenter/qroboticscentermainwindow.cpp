@@ -81,7 +81,7 @@ void QRoboticsCenterMainwindow::loadSettings() {
   move(settings.value("pos", QPoint(200, 200)).toPoint());
 
   //save scan settings
-  _scan_usb->setChecked(settings.value("scan_usb",true).toBool());
+  _scan_usb->setChecked(settings.value("scan_usb", true).toBool());
 #ifdef WITH_BLUETOOTH
   _scan_bluetooth->setChecked(settings.value("scan_bluetooth",false).toBool());
 #endif
