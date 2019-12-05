@@ -42,13 +42,13 @@ stages:
         curl -Lo linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
         chmod a+x linuxdeployqt
       displayName: 'setup'
-    - script: echo "##vso[task.setvariable variable=target;]develop"
-      condition: eq(variables['Build.SourceBranchName'], 'develop')
+    - script: echo "##vso[task.setvariable variable=target;]debug"
+      condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
         source /opt/qt511/bin/qt511-env.sh
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
-        if [ $(target) = 'develop' ]; then make debug -j5; else make -j5; fi
+        if [ $(target) = 'debug' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
         source /opt/qt511/bin/qt511-env.sh
@@ -83,8 +83,8 @@ stages:
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
         nmake debug
-      displayName: 'build (develop)'
-      condition: eq(variables['Build.SourceBranchName'], 'develop')
+      displayName: 'build (debug)'
+      condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
@@ -93,7 +93,7 @@ stages:
         set CL=/MP
         nmake
       displayName: 'build (release)'
-      condition: ne(variables['Build.SourceBranchName'], 'develop')
+      condition: contains(variables['Build.SourceBranch'], 'refs/tags/v') # build release if it's a v* tag
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\msvc2017_64\bin;%PATH%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
@@ -121,12 +121,12 @@ stages:
         brew install ./qt.rb
         brew link --force qt
       displayName: 'setup'
-    - script: echo "##vso[task.setvariable variable=target;]develop"
-      condition: eq(variables['Build.SourceBranchName'], 'develop')
+    - script: echo "##vso[task.setvariable variable=target;]debug"
+      condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
-        if [ $(target) = 'develop' ]; then make debug -j5; else make -j5; fi
+        if [ $(target) = 'debug' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
         cd build/bin/
@@ -143,7 +143,7 @@ stages:
     - build
   jobs:
 
-  # DEPLOY if DEVELOP
+  # create develop-release if branch name is 'develop'
   - job: develop
     condition: eq(variables['Build.SourceBranchName'], 'develop')
     steps:
@@ -175,9 +175,9 @@ stages:
         REPO: $(repo)
         TAG: 'dev'
 
-  # DEPLOY if RELEASE
+  # create release if branch contains 'refs/tags/v' (i.e., is tagged with 'v*')
   - job: release
-    condition: ne(variables['Build.SourceBranchName'], 'develop')
+    condition: contains(variables['Build.SourceBranch'], 'refs/tags/v')
     variables:
       tag: ''
     steps:
