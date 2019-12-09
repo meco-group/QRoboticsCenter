@@ -5,7 +5,7 @@ void custom_messagehandler(QtMsgType type, const QMessageLogContext &context, co
   QByteArray localMsg = msg.toLocal8Bit();
   // const char *file = context.file ? context.file : "";
   const char* function = context.function ? context.function : "";
-  const char* timestamp = QTime::currentTime().toString(Qt::ISODateWithMs).toLocal8Bit().data();
+  const char* timestamp = QTime::currentTime().toString(Qt::ISODateWithMs).toLocal8Bit().constData();
   switch (type) {
     case QtDebugMsg:
       fprintf(stderr, "[DEBUG] [%s] %s: %s\n", timestamp, function, localMsg.constData());
