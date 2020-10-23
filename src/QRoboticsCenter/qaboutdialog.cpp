@@ -17,7 +17,7 @@ QAboutDialog::QAboutDialog(QWidget *parent) : QDialog(parent), ui(new Ui::QAbout
   setVersion(QApplication::applicationVersion());
 #endif
   setIcon(QApplication::windowIcon());
-  setCopyright("Copyright (C) 2019 MECO Research Team, KU Leuven");
+  setCopyright("Copyright (C) 2020 MECO Research Team, KU Leuven");
   setLink("<a href=\"https://github.com/meco-group/QRoboticsCenter/\">GitHub repository</a>");
 }
 
