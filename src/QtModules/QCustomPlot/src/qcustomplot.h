@@ -53,6 +53,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QWheelEvent>
 #include <QtGui/QPixmap>
+#include <QtGui/QPainterPath>
 #include <QtCore/QVector>
 #include <QtCore/QString>
 #include <QtCore/QDateTime>

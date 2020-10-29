@@ -49,7 +49,7 @@ void QRoboticsCenterMainwindow::scan() {
 }
 
 void QRoboticsCenterMainwindow::saveSettings() {
-  QSettings settings("RobSoft", "QRoboticsCenter");
+  QSettings settings("MECO Research Team, KU Leuven", "QRoboticsCenter");
 
   // set window group
   settings.beginGroup("QRobotMainwindow");

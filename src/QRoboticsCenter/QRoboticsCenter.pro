@@ -1,6 +1,6 @@
 # QRoboticsCenter version
 VERSION_MAJOR = 6
-VERSION_MINOR = 0
+VERSION_MINOR = 1
 VERSION_PATCH = 0
 
 # QT
