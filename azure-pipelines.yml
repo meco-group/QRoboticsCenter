@@ -45,6 +45,12 @@ stages:
     - script: echo "##vso[task.setvariable variable=target;]debug"
       condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
+        cd /opt/ 
+        ls
+        cd /opt/qt515/
+        ls
+        cd /opt/qt515/bin/ 
+        ls
         source /opt/qt515/bin/qt515-env.sh
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
@@ -75,6 +81,9 @@ stages:
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
         python -m aqt install --outputdir $(Build.SourcesDirectory) $(QT_VERSION) windows desktop win64_mingw81
+        cd $(Build.SourcesDirectory)
+        pwd
+        ls 
       displayName: 'setup'
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH
