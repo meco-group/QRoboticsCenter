@@ -75,7 +75,6 @@ stages:
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
         python -m aqt install --outputdir $(Build.SourcesDirectory) $(QT_VERSION) windows desktop win64_mingw81
-        mv "$(Build.SourcesDirectory)\Qt$(QT_VERSION)" "$(Build.SourcesDirectory)\Qt"
       displayName: 'setup'
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH
