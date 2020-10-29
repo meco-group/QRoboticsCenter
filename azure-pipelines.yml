@@ -12,7 +12,7 @@ variables:
     value: true
   # (de)activate operating systems
   - name: LINUX
-    value: true
+    value: false
   - name: WINDOWS
     value: true
   - name: MAC
@@ -74,7 +74,7 @@ stages:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
-        python -m aqt install --outputdir "$(Build.SourcesDirectory)\Qt\" $(QT_VERSION) windows desktop win64_mingw81
+        python -m aqt install --outputdir $(Build.SourcesDirectory)\Qt $(QT_VERSION) windows desktop win64_mingw81
       displayName: 'setup'
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH
