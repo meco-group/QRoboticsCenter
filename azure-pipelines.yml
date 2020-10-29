@@ -79,7 +79,6 @@ stages:
       displayName: 'setup'
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH
-#       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
@@ -88,7 +87,6 @@ stages:
       condition: eq(variables['Build.SourceBranchName'], 'develop')
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH%
-#       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
@@ -97,7 +95,6 @@ stages:
       condition: ne(variables['Build.SourceBranchName'], 'develop')
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH%
-#       call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         cd build && mkdir "windows-x64"
         cp "bin/QRoboticsCenter.exe" "windows-x64/QRoboticsCenter.exe"
         windeployqt --dir "windows-x64/" "windows-x64/QRoboticsCenter.exe"
