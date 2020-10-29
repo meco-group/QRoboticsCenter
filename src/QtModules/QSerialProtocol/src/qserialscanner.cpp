@@ -94,6 +94,6 @@ void QSerialScanner::connectionAlive(QDataNode *datanode) {
 }
 
 void QSerialScanner::connectionDead(QDataNode *datanode) {
-    datanode->deleteLater();
+    // datanode->deleteLater(); // debugging issue #6
     qDebug() << "No MAVlink detected on device" << datanode->objectName();
 }
