@@ -4,10 +4,12 @@
 #include <QObject>
 #include <QtSerialPort>
 #include <QSerialPortInfo>
+#ifdef WITH_BLUETOOTH
 #include <QBluetoothDeviceDiscoveryAgent>
 #include <QBluetoothLocalDevice>
 #include <QBluetoothServiceInfo>
 #include <QBluetoothSocket>
+#endif
 
 #include <qserialprotocol.h>
 #include <qheartbeatdetector.h>
@@ -24,13 +26,18 @@ public:
     QSerialProtocol* findConnection(QString name);
 
     void setupUSB();
-    void setupBT();
     void setupTCP();
+#ifdef WITH_BLUETOOTH
+    void setupBT();
+#endif
+
 
 private:
     QUSBDeviceDiscoveryAgent        *_discovery_agent_USB;
+#ifdef WITH_BLUETOOTH
     QBluetoothDeviceDiscoveryAgent  *_discovery_agent_BT;
     QBluetoothLocalDevice           *_local_device_BT;
+#endif
 
     void checkConnection(QSerialProtocol* connection);
 
@@ -41,11 +48,14 @@ public slots:
     void query();
 
     void connectionUSB(QSerialPortInfo info);
-    void connectionBT(QBluetoothDeviceInfo info);
-    void connectionUDP(QString server, int port);
-
     void scanUSB();
+
+#ifdef WITH_BLUETOOTH
+    void connectionBT(QBluetoothDeviceInfo info);
     void scanBT();
+#endif
+
+    void connectionUDP(QString server, int port);
     void scanUDP();
 
 private slots:

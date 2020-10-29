@@ -2,8 +2,11 @@
 #include <QApplication>
 
 #include <qroboticscentermainwindow.h>
+#include <custom_messagehandler.h>
 
 int main(int argc, char *argv[]) {
+  qInstallMessageHandler(custom_messagehandler);
+
   QApplication a(argc, argv);
   a.setApplicationName("QRoboticsCenter");
   a.setOrganizationName("MECO Research Team, KU Leuven");
