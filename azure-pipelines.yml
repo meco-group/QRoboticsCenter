@@ -77,6 +77,12 @@ stages:
         python -m aqt install --outputdir $(Build.SourcesDirectory)\Qt $(QT_VERSION) windows desktop win64_mingw81
       displayName: 'setup'
     - script: |
+        cd $(Build.SourcesDirectory)
+        ls
+        cd Qt
+        ls
+        cd $(QT_VERSION)
+        ls
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
