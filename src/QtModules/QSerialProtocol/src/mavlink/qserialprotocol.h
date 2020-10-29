@@ -31,7 +31,7 @@ protected:
     virtual void timerEvent(QTimerEvent *);
 
 public:
-    QSerialProtocol(QIODevice *io, QObject *parent = 0);
+    QSerialProtocol(QIODevice *io, QObject *parent = 0, QString name = "");
     virtual ~QSerialProtocol();
 
     int packetCount();
