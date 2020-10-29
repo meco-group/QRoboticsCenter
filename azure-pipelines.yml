@@ -25,7 +25,7 @@ stages:
   condition: eq(variables.BUILD, true)
   jobs:
 
-  # BUILD for LINUX (Qt 5.15.0)
+  # BUILD for LINUX (Qt 5.14.2, no working package yet for 5.15.1)
   - job: linux
     condition: eq(variables.LINUX, true)
     pool:
@@ -34,9 +34,9 @@ stages:
       target: 'release' # default target
     steps:
     - script: |
-        sudo add-apt-repository ppa:beineri/opt-qt-5.15.0-xenial
+        sudo add-apt-repository ppa:beineri/opt-qt-5.14.2-xenial
         sudo apt-get update
-        sudo apt-get -y install qt515-meta-full
+        sudo apt-get -y install qt514-meta-full
         sudo apt-get -y install qt5-qmake
         sudo apt-get -y install libgl1-mesa-dev
         curl -Lo linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/6/linuxdeployqt-6-x86_64.AppImage
@@ -45,19 +45,13 @@ stages:
     - script: echo "##vso[task.setvariable variable=target;]debug"
       condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
-        cd /opt/ 
-        ls
-        cd /opt/qt515/
-        ls
-        cd /opt/qt515/bin/ 
-        ls
-        source /opt/qt515/bin/qt515-env.sh
+        source /opt/qt514/bin/qt514-env.sh
         rm -rf build/ && mkdir build && cd build
         qmake ../src/QRoboticsCenter/QRoboticsCenter.pro
         if [ $(target) = 'debug' ]; then make debug -j5; else make -j5; fi
       displayName: 'build'
     - script: |
-        source /opt/qt515/bin/qt515-env.sh
+        source /opt/qt514/bin/qt514-env.sh
         python3 resources/scripts/prepare_linuxdeploy.py
         cp linuxdeployqt build/linuxdeployqt && cd build
         cp ../src/QRoboticsCenter/icons/QRoboticsCenter_logo.png app/usr/share/icons/hicolor/256x256/QRoboticsCenter.png
@@ -80,17 +74,14 @@ stages:
     - script: |
         python -m pip install --upgrade pip setuptools wheel
         python -m pip install aqtinstall
-        python -m aqt install --outputdir $(Build.SourcesDirectory) $(QT_VERSION) windows desktop win64_mingw81
-        cd $(Build.SourcesDirectory)
-        pwd
-        ls 
+        python -m aqt install --outputdir "$(Build.SourcesDirectory)\Qt\" $(QT_VERSION) windows desktop win64_mingw81
       displayName: 'setup'
     - script: |
         set PATH=$(Build.SourcesDirectory)\Qt\$(QT_VERSION)\mingw81_64\bin;%PATH
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
-        nmake debug
+        mingw64-make debug
       displayName: 'build (debug)'
       condition: not(contains(variables['Build.SourceBranch'], 'refs/tags/v')) # build with debug output unless it's a v* tag
     - script: |
@@ -98,7 +89,7 @@ stages:
         mkdir build & cd build
         qmake.exe ../src/QRoboticsCenter/QRoboticsCenter.pro
         set CL=/MP
-        nmake
+        mingw64-make 
       displayName: 'build (release)'
       condition: contains(variables['Build.SourceBranch'], 'refs/tags/v') # build release if it's a v* tag
     - script: |
