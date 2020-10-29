@@ -12,11 +12,11 @@ variables:
     value: true
   # (de)activate operating systems
   - name: LINUX
-    value: false
+    value: true
   - name: WINDOWS
     value: true
   - name: MAC
-    value: false
+    value: true
   - name: QT_VERSION
     value: '5.15.1'
 
